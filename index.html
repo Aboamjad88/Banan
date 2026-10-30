@@ -1,0 +1,711 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#FFD21F">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Banana">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Crect width='48' height='48' rx='10' fill='%23FFD21F'/%3E%3Cpath d='M10 16c2 18 18 26 32 17-11 3-23-2-26-19-1-3-7-2-6 2z' fill='%23fff3a0' stroke='%232E2208' stroke-width='3' stroke-linejoin='round'/%3E%3C/svg%3E">
+<title>Banana for Somalia</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito+Sans:wght@400;600;700&display=swap">
+<style>
+/* Layout: one phone-width column (max 480px). Yellow top band, content below, fixed bottom tab bar. */
+:root{
+  --bg:#FFFCEB; --surface:#FFFFFF; --ink:#2E2208; --muted:#76673A; --line:#EFE3A8;
+  --accent:#FFD21F; --accent-ink:#2E2208; --leaf:#4F7A1A; --danger:#B3261E; --chip:#FFF1A8;
+  --display:'Fredoka','Trebuchet MS',system-ui,sans-serif;
+  --body:'Nunito Sans',system-ui,-apple-system,'Segoe UI',sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#17120A; --surface:#241C0E; --ink:#FFF3C2; --muted:#BFAF7A; --line:#3A2E16; --chip:#3A2E16; --leaf:#9CCB4A; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#17120A; --surface:#241C0E; --ink:#FFF3C2; --muted:#BFAF7A; --line:#3A2E16; --chip:#3A2E16; --leaf:#9CCB4A; color-scheme:dark}
+*{box-sizing:border-box}
+html,body{min-height:100%}
+body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.45;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 96px}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid var(--leaf);outline-offset:2px}
+.shell{max-width:480px;margin:0 auto;min-width:0}
+h1,h2,h3{font-family:var(--display);margin:0;text-wrap:balance;line-height:1.15}
+.top{background:var(--accent);color:var(--accent-ink);margin:0 calc(-1*max(16px,env(safe-area-inset-left,0px)));padding:14px max(16px,env(safe-area-inset-right,0px)) 14px max(16px,env(safe-area-inset-left,0px));border-radius:0 0 22px 22px}
+.brand{display:flex;align-items:center;gap:8px;font-family:var(--display);font-weight:700;font-size:24px}
+.brand small{font-family:var(--body);font-weight:600;font-size:12px;opacity:.8;margin-left:auto;margin-right:4px}
+.lang{border:2px solid var(--ink);background:transparent;color:var(--ink);border-radius:999px;padding:4px 12px;font-weight:700;font-size:12px;flex:none}
+.top .lang{color:#2E2208;border-color:#2E2208}
+.langrow{display:flex;justify-content:flex-end;padding-top:14px}
+.search{display:flex;gap:8px;margin-top:12px}
+.search input{flex:1;min-width:0;border:2px solid var(--ink);background:#FFFBE0;color:#2E2208;border-radius:14px;padding:11px 14px}
+.top .search input{border-color:#2E2208}
+.chips{display:flex;gap:8px;overflow-x:auto;padding:12px 0 4px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:none;border:1.5px solid var(--line);background:var(--surface);border-radius:999px;padding:7px 14px;font-weight:700;font-size:13px}
+.chip[aria-pressed="true"]{background:var(--accent);border-color:var(--ink);color:var(--accent-ink)}
+.chip.cat{background:var(--chip)}
+.chip.cat[aria-pressed="true"]{background:var(--ink);color:var(--accent);border-color:var(--ink)}
+.count{color:var(--muted);font-size:13px;margin:10px 0 8px;font-weight:600}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.card{background:var(--surface);border:1.5px solid var(--line);border-radius:16px;overflow:hidden;text-align:left;padding:0;display:block;width:100%}
+.card img{display:block;width:100%;aspect-ratio:1/1;object-fit:cover;background:var(--chip)}
+.card .b{padding:9px 11px 12px}
+.price{font-family:var(--display);font-weight:700;font-size:18px}
+.cw{position:relative;min-width:0}
+.heart{position:absolute;top:8px;right:8px;width:38px;height:38px;border-radius:50%;border:0;background:rgba(255,252,235,.94);color:#2E2208;display:grid;place-items:center;padding:0;flex:none}
+.heart svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2;stroke-linejoin:round}
+.heart[aria-pressed="true"] svg{fill:#E0452B;stroke:#E0452B}
+.heart.inl{position:static;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);width:44px;height:44px}
+.soldtag{position:absolute;left:8px;top:8px;background:#2E2208;color:#FFD21F;border-radius:8px;padding:2px 9px;font-weight:700;font-size:12px;font-family:var(--display)}
+.card.isold img{opacity:.45}
+.card .t{font-size:14px;overflow-wrap:anywhere;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.meta{color:var(--muted);font-size:12px;margin-top:4px;font-weight:600}
+.empty{text-align:center;color:var(--muted);padding:40px 12px}
+.btn{border:2px solid var(--ink);background:var(--accent);color:var(--accent-ink);border-radius:14px;padding:12px 18px;font-weight:700;font-family:var(--display);font-size:16px;width:100%}
+.btn.ghost{background:transparent;color:var(--ink)}
+.btn.small{width:auto;padding:8px 14px;font-size:14px}
+.link{background:none;border:0;padding:6px;color:var(--leaf);font-weight:700;text-decoration:underline}
+.page{padding-top:16px;display:flex;flex-direction:column;gap:14px}
+.bar{display:flex;align-items:center;gap:10px;padding-top:14px}
+.bar h2{font-size:20px}
+.bar .lang{margin-left:auto}
+.back{border:1.5px solid var(--line);background:var(--surface);border-radius:12px;width:40px;height:40px;font-size:20px;flex:none}
+label{display:flex;flex-direction:column;gap:6px;font-weight:700;font-size:14px}
+.in{border:1.5px solid var(--line);background:var(--surface);border-radius:12px;padding:11px 12px;width:100%;min-width:0}
+textarea.in{min-height:90px;resize:vertical}
+.err{color:var(--danger);font-size:13px;font-weight:700;min-height:1em;margin:0}
+.row2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.hero{text-align:center;padding:14px 6px 4px;display:flex;flex-direction:column;align-items:center;gap:10px}
+.hero h1{font-size:30px}
+.hero p{margin:0;color:var(--muted);max-width:32ch}
+.gallery{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:8px;border-radius:18px}
+.gallery img{flex:none;width:100%;aspect-ratio:1/1;object-fit:cover;scroll-snap-align:start;border-radius:18px;background:var(--chip)}
+.seller{display:flex;align-items:center;gap:12px;background:var(--surface);border:1.5px solid var(--line);border-radius:16px;padding:12px}
+.av{flex:none;width:44px;height:44px;border-radius:50%;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center;font-family:var(--display);font-weight:700;font-size:19px}
+.seller div{min-width:0}
+.tag{display:inline-block;background:var(--chip);border-radius:999px;padding:3px 10px;font-size:12px;font-weight:700}
+.msgs{display:flex;flex-direction:column;gap:8px;padding:6px 0 90px}
+.bub{max-width:80%;padding:9px 13px;border-radius:16px;overflow-wrap:anywhere}
+.bub.me{align-self:flex-end;background:var(--accent);color:var(--accent-ink);border-bottom-right-radius:4px}
+.bub.them{align-self:flex-start;background:var(--surface);border:1.5px solid var(--line);border-bottom-left-radius:4px}
+.mini{display:flex;gap:10px;align-items:center;background:var(--surface);border:1.5px solid var(--line);border-radius:14px;padding:8px;text-align:left;width:100%}
+.mini img{width:48px;height:48px;border-radius:10px;object-fit:cover;flex:none}
+.mini div{min-width:0}
+.mini b{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.quick{display:flex;gap:8px;flex-wrap:wrap}
+.photos{display:flex;gap:8px;flex-wrap:wrap}
+.ph{width:84px;height:84px;border-radius:12px;object-fit:cover;border:1.5px solid var(--line)}
+.add{width:84px;height:84px;border-radius:12px;border:2px dashed var(--ink);display:grid;place-items:center;text-align:center;font-size:12px;font-weight:700;cursor:pointer;background:var(--chip);padding:4px}
+.fixed{position:fixed;left:0;right:0;bottom:0;z-index:5;background:var(--surface);border-top:2px solid var(--ink);padding:8px max(16px,env(safe-area-inset-right,0px)) calc(8px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
+.fixed>div{max-width:480px;margin:0 auto;display:flex;gap:8px}
+.tabs button{flex:1;background:none;border:0;display:flex;flex-direction:column;align-items:center;gap:2px;font-weight:700;font-size:12px;padding:4px 0;color:var(--muted);position:relative}
+.tabs button[aria-current="page"]{color:var(--ink)}
+.tabs button[aria-current="page"] svg{background:var(--accent);border-radius:12px;color:var(--accent-ink)}
+.tabs svg{width:44px;height:28px;padding:3px 12px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.tabs .plus svg{background:var(--accent);color:var(--accent-ink);border:2px solid var(--ink);border-radius:14px}
+.composer input{flex:1;min-width:0}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(92px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:12px;font-weight:700;z-index:9;max-width:90%}
+.banner{margin-top:12px;background:var(--chip);border:1.5px solid var(--line);border-radius:12px;padding:10px 12px;font-weight:700;font-size:13px}
+.note{font-size:12px;color:var(--muted);text-align:center}
+@media (prefers-reduced-motion:no-preference){.card{transition:transform .12s}.card:active{transform:scale(.98)}}
+</style>
+</head>
+<body>
+<div class="shell" id="app"></div>
+<div id="toastBox" aria-live="polite"></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.3"></script>
+<script>if(!window.supabase){document.write('<script src="https://unpkg.com/@supabase/supabase-js@2.117.3"><\/script>')}</script>
+<script>window.BANANA_CONFIG={"url": "https://htmxeutnqgrzzrwchbpp.supabase.co", "anonKey": "sb_publishable_Wqpz0eG907sFI3ev4_0IWg_pMxSHBcp"};</script>
+<script>
+/* ---------- Words: every screen text lives here, English (en) and Somali (so) ---------- */
+var TXT={
+ en:{
+  tagline:'for Somalia',langBtn:'Soomaali',langAria:'Switch language',
+  searchPh:'Search phones, sofas, bikes',searchLbl:'Search items',
+  all:'All',allSom:'All Somalia',
+  countAll:'{n} items across Somalia',countOne:'{n} item in {c}',countMany:'{n} items in {c}',countAllOne:'{n} item across Somalia',
+  noItems:'No items found',noItemsHint:'Try another city or clear the search.',
+  navBrowse:'Browse',navSell:'Sell',navMsgs:'Messages',navMe:'Me',navAria:'Main',
+  wH1:'Buy and sell near you in Somalia',wP:'Post what you no longer need. Find what you do. Message sellers in your city.',
+  wEditH1:'Your profile',
+  yourName:'Your name',namePh:'Example: Hodan Ali',phone:'Phone number',phoneNote:'Only you can see your phone number.',yourCity:'Your city',
+  create:'Create my account',saveProfile:'Save profile',cancel:'Cancel',guest:'Just look around first',proto:'Test version.',
+  errName:'Enter your name.',errPhone:'Enter a phone number with at least 7 digits.',
+  needPost:'Create an account to post an item.',needMsg:'Create an account to message sellers.',
+  welcome:'Welcome to Banana, {n}!',profSaved:'Profile saved',
+  item:'Item',back:'Back',messageSeller:'Message seller',removeListing:'Remove my listing',removed:'Listing removed',
+  sellerIn:'Seller in {c}',noDesc:'No description.',sellerFallback:'Seller',buyerFallback:'Buyer',
+  chatHello:'Say hello to {n}. Tap a message to start.',q1:'Is this still available?',q2:'Can you do {p}?',q3:'Where can we meet?',
+  sample:'Sample listing. Replies are automatic.',writeMsg:'Write a message',send:'Send',msgLbl:'Message',you:'You: ',msgFail:'Message not sent. Try again.',
+  r1:'Yes, it is still available.',r2:'Thanks for asking. Where are you in the city?',r3:'I can lower it a little if you come today.',r4:'Sure, we can meet somewhere public. Tomorrow morning works for me.',
+  noMsgs:'No messages yet',noMsgsHint:'Open an item and tap Message seller.',
+  sellTitle:'Sell something',photos:'Photos',upTo4:'(up to 4)',addPhoto:'+ Add photo',photoN:'Photo {n}',
+  whatSelling:'What are you selling?',titlePh:'Example: Samsung phone, like new',priceUsd:'Price (USD)',category:'Category',city:'City',
+  desc:'Description',descPh:'Condition, size, where to meet',postBtn:'Post for sale',posting:'Posting…',
+  errPhotos:'Add at least one photo.',errTitle:'Enter a title.',errPrice:'Enter a price above 0.',live:'Your item is live',
+  guestTitle:'You have not created an account yet',guestP:'Create an account to post items and message sellers.',createAcc:'Create account',
+  myProfile:'My profile',editProfile:'Edit profile',myListings:'My listings ({n})',noneYet:'You have not posted anything yet.',
+  agoNow:'Just now',agoH:'{n}h ago',agoD:'{n}d ago',
+  savedChip:'Saved',sold:'Sold',markSold:'Mark as sold',markAvail:'Mark as available',soldMsg:'Marked as sold',availMsg:'Back on sale',
+  savedItems:'Saved items ({n})',noSaved:'Tap the heart on an item to save it.',soldBanner:'This item has been sold.',heartAdd:'Save item',heartDel:'Remove from saved',
+  loading:'Loading listings…',noDb:'Shared listings are not available here. Open this page from its Claude link and sign in.',
+  readOnly:'You can look around, but not post or message. Ask the owner for edit access.',saveFail:'Could not save. Check your internet and try again.',
+  email:'Email',password:'Password',passHint:'At least 6 characters',signIn:'Sign in',signUp:'Create account',haveAcc:'Already have an account? Sign in',noAcc:'New here? Create an account',signOut:'Sign out',authH1:'Sign in to Banana',errEmail:'Enter a valid email.',errPass:'Use at least 6 characters.',checkMail:'Check your email to confirm your account, then sign in.',authFail:'Could not sign in. Check your email and password.',needFav:'Sign in to save items.',setupH:'Almost ready',setupP:'Open config.js and add your Supabase URL and key. The README explains how.',
+  c:{Electronics:'Electronics',Furniture:'Furniture',Clothes:'Clothes',Vehicles:'Vehicles',Home:'Home'},
+  city_:{Mogadishu:'Mogadishu',Hargeisa:'Hargeisa',Kismayo:'Kismayo',Baidoa:'Baidoa',Garowe:'Garowe',Bosaso:'Bosaso',Beledweyne:'Beledweyne',Galkayo:'Galkayo'}
+ },
+ so:{
+  tagline:'ee Soomaaliya',langBtn:'English',langAria:'Beddel luqadda',
+  searchPh:'Raadi telefoon, sofa, mooto',searchLbl:'Raadi alaabta',
+  all:'Dhammaan',allSom:'Soomaaliya oo dhan',
+  countAll:'{n} alaab, Soomaaliya oo dhan',countOne:'{n} alaab, {c}',countMany:'{n} alaab, {c}',countAllOne:'{n} alaab, Soomaaliya oo dhan',
+  noItems:'Wax alaab ah lama helin',noItemsHint:'Isku day magaalo kale ama tirtir raadinta.',
+  navBrowse:'Raadi',navSell:'Iibi',navMsgs:'Fariimo',navMe:'Aniga',navAria:'Hore',
+  wH1:'Iibso oo iibi meel kuu dhow, Soomaaliya gudaheeda',wP:'Soo dhig wixii aanad u baahnayn. Hel wixii aad u baahan tahay. La hadal iibiyayaasha magaaladaada.',
+  wEditH1:'Boggaaga',
+  yourName:'Magacaaga',namePh:'Tusaale: Hodan Cali',phone:'Lambarka telefoonka',phoneNote:'Adiga keliya ayaa arki kara lambarkaaga.',yourCity:'Magaaladaada',
+  create:'Samee akoonkayga',saveProfile:'Keydi boggaga',cancel:'Jooji',guest:'Marka hore aan eego',proto:'Nooc tijaabo ah.',
+  errName:'Geli magacaaga.',errPhone:'Geli lambar telefoon oo ugu yaraan 7 god ah.',
+  needPost:'Samee akoon si aad alaab u soo dhigto.',needMsg:'Samee akoon si aad ula hadasho iibiyayaasha.',
+  welcome:'Soo dhawaaw Banana, {n}!',profSaved:'Bogga waa la keydiyay',
+  item:'Alaabta',back:'Dib',messageSeller:'Fariin u dir iibiyaha',removeListing:'Ka saar alaabtayda',removed:'Alaabta waa laga saaray',
+  sellerIn:'Iibiye ku yaal {c}',noDesc:'Faahfaahin ma jirto.',sellerFallback:'Iibiye',buyerFallback:'Iibsade',
+  chatHello:'U salaan {n}. Taabo fariin si aad u bilowdo.',q1:'Weli ma diyaar baa?',q2:'Ma ka dhigi kartaa {p}?',q3:'Xaggee isla kulmi karnaa?',
+  sample:'Alaab tijaabo ah. Jawaabuhu waa kuwo toos ah.',writeMsg:'Qor fariin',send:'Dir',msgLbl:'Fariin',you:'Adiga: ',msgFail:'Fariinta lama dirin. Mar kale isku day.',
+  r1:'Haa, weli waa diyaar.',r2:'Mahadsanid. Meeshee ka joogtaa magaalada?',r3:'Qiimaha waan yaree karaa haddii aad maanta timaado.',r4:'Hubaal, waxaan ku kulmi karnaa meel dadweyne. Berri subax ayaa ii fiican.',
+  noMsgs:'Weli fariimo ma jiraan',noMsgsHint:'Fur alaab oo taabo Fariin u dir iibiyaha.',
+  sellTitle:'Iibi wax',photos:'Sawirro',upTo4:'(ugu badnaan 4)',addPhoto:'+ Ku dar sawir',photoN:'Sawir {n}',
+  whatSelling:'Maxaad iibinaysaa?',titlePh:'Tusaale: Telefoon Samsung, cusub oo kale',priceUsd:'Qiimaha (USD)',category:'Nooca',city:'Magaalada',
+  desc:'Faahfaahin',descPh:'Xaaladda, cabbirka, meesha aad ku kulmi doonto',postBtn:'Soo dhig iibka',posting:'Waa la soo dhigayaa…',
+  errPhotos:'Ku dar ugu yaraan hal sawir.',errTitle:'Geli cinwaan.',errPrice:'Geli qiime ka badan 0.',live:'Alaabtaada waa la soo dhigay',
+  guestTitle:'Weli akoon ma samaysan',guestP:'Samee akoon si aad alaab u soo dhigto oo aad ula hadasho iibiyayaasha.',createAcc:'Samee akoon',
+  myProfile:'Boggayga',editProfile:'Wax ka beddel boggaaga',myListings:'Alaabtayda ({n})',noneYet:'Weli wax ma soo dhigin.',
+  agoNow:'Hadda',agoH:'{n} saac ka hor',agoD:'{n} maalin ka hor',
+  savedChip:'La keydiyay',sold:'La iibiyay',markSold:'Calaamadi in la iibiyay',markAvail:'Calaamadi inuu diyaar yahay',soldMsg:'Waa la iibiyay',availMsg:'Mar kale waa la iibinayaa',
+  savedItems:'Alaabta la keydiyay ({n})',noSaved:'Taabo wadnaha alaab si aad u keydiso.',soldBanner:'Alaabtan waa la iibiyay.',heartAdd:'Keydi alaabta',heartDel:'Ka saar keydka',
+  loading:'Alaabta waa la soo rarayaa…',noDb:'Alaabta la wadaago halkan lama heli karo. Fur bogga xiriirkiisa Claude oo gal.',
+  readOnly:'Waad eegi kartaa, laakiin ma soo dhigi kartid ama fariin ma diri kartid. Weydii mulkiilaha ogolaansho wax-ka-bedelid.',saveFail:'Lama keydin karin. Hubi internetkaaga oo mar kale isku day.',
+  email:'Iimaylka',password:'Furaha sirta ah',passHint:'Ugu yaraan 6 xaraf',signIn:'Gal',signUp:'Samee akoon',haveAcc:'Akoon ma leedahay? Gal',noAcc:'Cusub? Samee akoon',signOut:'Ka bax',authH1:'Gal Banana',errEmail:'Geli iimayl sax ah.',errPass:'Isticmaal ugu yaraan 6 xaraf.',checkMail:'Iimaylkaaga hubi si aad u xaqiijiso akoonkaaga, ka dibna gal.',authFail:'Lama geli karin. Hubi iimaylkaaga iyo furahaaga.',needFav:'Gal si aad alaab u keydiso.',setupH:'Wuu dhawyahay',setupP:'Fur config.js oo ku dar URL-ka iyo furaha Supabase. README ayaa sharaxaya sida.',
+  c:{Electronics:'Elektaroonig',Furniture:'Agabka guriga',Clothes:'Dhar',Vehicles:'Gawaarida',Home:'Alaabta jikada'},
+  city_:{Mogadishu:'Muqdisho',Hargeisa:'Hargeysa',Kismayo:'Kismaayo',Baidoa:'Baydhabo',Garowe:'Garoowe',Bosaso:'Boosaaso',Beledweyne:'Beledweyne',Galkayo:'Galkacyo'}
+ }
+};
+var LANG='en';
+try{var sl=localStorage.getItem('banana_lang');if(sl==='so'||sl==='en')LANG=sl;else if((navigator.language||'').toLowerCase().indexOf('so')===0)LANG='so'}catch(e){}
+function t(k,p){var s=TXT[LANG][k];if(s==null)s=TXT.en[k];if(p)for(var x in p)s=s.replace('{'+x+'}',p[x]);return s}
+function catL(c){return TXT[LANG].c[c]||c}
+function cityL(c){return TXT[LANG].city_[c]||c}
+function ago(ts){var h=(Date.now()-ts)/36e5;if(h<1)return t('agoNow');if(h<24)return t('agoH',{n:Math.round(h)});return t('agoD',{n:Math.round(h/24)})}
+
+var CITIES=['Mogadishu','Hargeisa','Kismayo','Baidoa','Garowe','Bosaso','Beledweyne','Galkayo'];
+var CATS=['Electronics','Furniture','Clothes','Vehicles','Home'];
+var HUES={Electronics:'#FFE066',Furniture:'#F3C969',Clothes:'#C9E27A',Vehicles:'#FFD21F',Home:'#F7B955'};
+var GLYPH={
+ Electronics:'<rect x="34" y="16" width="32" height="68" rx="7"/><circle cx="50" cy="74" r="3"/>',
+ Furniture:'<rect x="24" y="42" width="52" height="24" rx="6"/><rect x="16" y="50" width="14" height="26" rx="5"/><rect x="70" y="50" width="14" height="26" rx="5"/>',
+ Clothes:'<path d="M36 22 22 32l8 12 6-4v36h28V40l6 4 8-12-14-10q-14 10-28 0z"/>',
+ Vehicles:'<rect x="16" y="48" width="68" height="18" rx="6"/><path d="M28 48l9-15h26l9 15"/><circle cx="34" cy="70" r="7"/><circle cx="66" cy="70" r="7"/>',
+ Home:'<rect x="28" y="44" width="44" height="28" rx="6"/><path d="M28 54h-8M72 54h8M32 38h36"/>'
+};
+function ph(cat){
+  var s='<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="'+(HUES[cat]||'#FFE066')+'"/><g fill="none" stroke="#2E2208" stroke-width="3.5" stroke-linejoin="round" stroke-linecap="round">'+(GLYPH[cat]||'')+'</g></svg>';
+  return 'data:image/svg+xml;utf8,'+encodeURIComponent(s);
+}
+var BANANA='<svg width="34" height="34" viewBox="0 0 48 48" aria-hidden="true"><path d="M6 14c2 20 20 30 38 20-12 4-26-2-30-22-1-4-8-3-8 2z" fill="#FFD21F" stroke="#2E2208" stroke-width="3" stroke-linejoin="round"/><path d="M6 12l-2-5" stroke="#4F7A1A" stroke-width="4" stroke-linecap="round"/></svg>';
+
+/* ---------- State. Shared data comes from the db capability: listings, users, chats ---------- */
+var SB=null,USER=null,UID=null,ME=null,CANWRITE=null,CFG=window.BANANA_CONFIG||{};
+var S={view:'home',city:'All',cat:'All',q:'',sel:null,draft:{photos:[]},reg:'',err:{},saved:false,
+  ready:false,listings:[],users:{},usersLoaded:false,priv:{favs:[],phone:''},chatsB:{},chatsS:{},
+  guest:false,noCfg:false,authMode:'in',paths:{},msgChan:null,welcomed:false,editing:false,photosOf:{},msgs:[],activeChat:null,chatFrom:'detail',posting:false,unMsgs:null};
+
+function esc(x){return String(x).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+function byId(id){return S.listings.filter(function(i){return String(i.id)===String(id)})[0]}
+function img(it){return it.thumb||ph(it.cat)}
+function money(n){return '$'+Number(n).toLocaleString('en-US')}
+function ini(n){return esc((n||'?').trim().charAt(0).toUpperCase())}
+function iTitle(i){return LANG==='so'&&i.so?i.so.title:i.title}
+function iDesc(i){return LANG==='so'&&i.so?i.so.desc:i.desc}
+function uName(id){var u=S.users[id];return u&&u.name?u.name:''}
+function sName(l){return l.sellerName||uName(l.sellerId)||t('sellerFallback')}
+function isReg(){return !!(UID&&S.users[UID])}
+function isMine(l){return !!UID&&l.sellerId===UID}
+function toast(m){var b=document.getElementById('toastBox');b.innerHTML='<div class="toast">'+esc(m)+'</div>';setTimeout(function(){b.innerHTML=''},2600)}
+function go(v,extra){
+  S.view=v;if(extra)for(var k in extra)S[k]=extra[k];
+  if(v!=='chat'){stopMsgs();S.activeChat=null;S.msgs=[]}
+  render();window.scrollTo(0,0);
+  if(v==='detail')loadPhotos(S.sel);
+}
+function langBtn(){return '<button class="lang" type="button" data-act="lang" aria-label="'+esc(t('langAria'))+'">'+esc(t('langBtn'))+'</button>'}
+
+/* Serialize writes so two writes never overlap on the same document. */
+var Q=Promise.resolve();
+function queue(fn){var p=Q.then(fn);Q=p.catch(function(){});return p}
+
+function filtered(){
+  var q=S.q.trim().toLowerCase();
+  return S.listings.filter(function(i){
+    var hay=(i.title+' '+(i.desc||'')+' '+(i.so?i.so.title+' '+i.so.desc:'')).toLowerCase();
+    return !i.sold&&(!S.saved||S.priv.favs.indexOf(i.id)>-1)&&(S.city==='All'||i.city===S.city)&&(S.cat==='All'||i.cat===S.cat)&&(!q||hay.indexOf(q)>-1);
+  });
+}
+function heartBtn(i,inl){
+  var on=S.priv.favs.indexOf(i.id)>-1;
+  return '<button class="heart'+(inl?' inl':'')+'" type="button" data-act="fav" data-id="'+esc(i.id)+'" aria-pressed="'+on+'" aria-label="'+esc(t(on?'heartDel':'heartAdd'))+'"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20s-7-4.5-7-10a4 4 0 0 1 7-2.5A4 4 0 0 1 19 10c0 5.5-7 10-7 10z"/></svg></button>';
+}
+function cardHtml(i){
+  return '<div class="cw"><button class="card'+(i.sold?' isold':'')+'" data-act="open" data-id="'+esc(i.id)+'"><img alt="" src="'+img(i)+'"><div class="b"><div class="price">'+money(i.price)+'</div><div class="t">'+esc(iTitle(i))+'</div><div class="meta">'+esc(cityL(i.city))+' · '+esc(ago(i.ts))+'</div></div></button>'+
+  (i.sold?'<span class="soldtag">'+esc(t('sold'))+'</span>':'')+heartBtn(i,false)+'</div>';
+}
+function bannerHtml(){
+  if(S.noCfg)return '<div class="banner"><b>'+esc(t('setupH'))+'</b><br>'+esc(t('setupP'))+'</div>';
+  return '';
+}
+function gridHtml(){
+  if(!S.ready)return '<div class="empty">'+esc(t('loading'))+'</div>';
+  if(S.noCfg)return '';
+  var l=filtered(),n=l.length,txt;
+  if(S.city==='All')txt=t(n===1?'countAllOne':'countAll',{n:n});
+  else txt=t(n===1?'countOne':'countMany',{n:n,c:cityL(S.city)});
+  var head='<div class="count">'+esc(txt)+'</div>';
+  if(!n)return head+'<div class="empty"><b>'+esc(t('noItems'))+'</b><br>'+esc(t(S.saved&&!S.priv.favs.length?'noSaved':'noItemsHint'))+'</div>';
+  return head+'<div class="grid">'+l.map(cardHtml).join('')+'</div>';
+}
+function chipRow(list,cur,act,cls,sv){
+  return '<div class="chips">'+(sv?'<button class="chip cat" aria-pressed="'+S.saved+'" data-act="savedf">'+esc(t('savedChip'))+'</button>':'')+['All'].concat(list).map(function(c){
+    var lab=c==='All'?(act==='city'?t('allSom'):t('all')):(act==='city'?cityL(c):catL(c));
+    return '<button class="chip '+(cls||'')+'" aria-pressed="'+(cur===c)+'" data-act="'+act+'" data-v="'+c+'">'+esc(lab)+'</button>'}).join('')+'</div>';
+}
+function tabs(){
+  var v=S.view;
+  function tb(id,label,svg,cur,cls){return '<button class="'+(cls||'')+'" data-act="tab" data-v="'+id+'"'+(cur?' aria-current="page"':'')+'>'+svg+esc(label)+'</button>'}
+  var home='<svg viewBox="0 0 44 28"><path d="M14 14l8-6 8 6v8H14z"/></svg>';
+  var plus='<svg viewBox="0 0 44 28"><path d="M22 7v14M15 14h14"/></svg>';
+  var chat='<svg viewBox="0 0 44 28"><path d="M13 8h18v11H21l-5 4v-4h-3z"/></svg>';
+  var me='<svg viewBox="0 0 44 28"><circle cx="22" cy="10" r="4"/><path d="M14 22c1-5 15-5 16 0"/></svg>';
+  return '<nav class="fixed tabs" aria-label="'+esc(t('navAria'))+'"><div>'+tb('home',t('navBrowse'),home,v==='home'||v==='detail')+tb('post',t('navSell'),plus,v==='post','plus')+tb('msgs',t('navMsgs'),chat,v==='msgs')+tb('me',t('navMe'),me,v==='me')+'</div></nav>';
+}
+
+var V={};
+V.welcome=function(){
+  var e=S.err,ed=S.editing;
+  var nm=uName(UID)||(ME&&ME.name)||'';
+  var cy=(UID&&S.users[UID]&&S.users[UID].city)||'';
+  return '<div class="langrow">'+langBtn()+'</div><div class="hero">'+BANANA.replace('width="34" height="34"','width="72" height="72"')+'<h1>'+esc(t(ed?'wEditH1':'wH1'))+'</h1>'+(ed?'':'<p>'+esc(t('wP'))+'</p>')+'</div>'+
+  '<form class="page" id="regForm" novalidate>'+
+  (S.reg?'<p class="err" style="text-align:center">'+esc(S.reg)+'</p>':'')+
+  '<label for="rName">'+esc(t('yourName'))+'<input class="in" id="rName" autocomplete="name" placeholder="'+esc(t('namePh'))+'" value="'+esc(nm)+'"><span class="err">'+esc(e.name||'')+'</span></label>'+
+  '<label for="rPhone">'+esc(t('phone'))+'<input class="in" id="rPhone" inputmode="tel" autocomplete="tel" placeholder="+252 61 555 0123" value="'+esc(S.priv.phone||'')+'"><span class="meta" style="margin:0">'+esc(t('phoneNote'))+'</span><span class="err">'+esc(e.phone||'')+'</span></label>'+
+  '<label for="rCity">'+esc(t('yourCity'))+'<select class="in" id="rCity">'+CITIES.map(function(c){return '<option value="'+c+'"'+(c===cy?' selected':'')+'>'+esc(cityL(c))+'</option>'}).join('')+'</select></label>'+
+  '<button class="btn" type="submit">'+esc(t(ed?'saveProfile':'create'))+'</button>'+
+  (ed?'<button class="link" type="button" data-act="cancel">'+esc(t('cancel'))+'</button>':'<button class="link" type="button" data-act="guest">'+esc(t('guest'))+'</button>')+
+  '<p class="note">'+esc(t('proto'))+'</p></form>';
+};
+V.home=function(){
+  return '<header class="top"><div class="brand">'+BANANA+'Banana<small>'+esc(t('tagline'))+'</small>'+langBtn()+'</div>'+
+  '<div class="search"><input id="q" type="search" placeholder="'+esc(t('searchPh'))+'" aria-label="'+esc(t('searchLbl'))+'" value="'+esc(S.q)+'"></div></header>'+
+  bannerHtml()+chipRow(CITIES,S.city,'city')+chipRow(CATS,S.cat,'cat','cat',true)+'<div id="grid">'+gridHtml()+'</div>';
+};
+V.detail=function(){
+  var i=byId(S.sel);if(!i)return '<div class="bar"><button class="back" data-act="back" aria-label="'+esc(t('back'))+'">&larr;</button><h2>'+esc(t('item'))+'</h2>'+langBtn()+'</div><div class="empty">'+esc(S.ready?t('noItems'):t('loading'))+'</div>';
+  var pics=S.photosOf[i.id]&&S.photosOf[i.id].length?S.photosOf[i.id]:[img(i)];
+  var ph1=pics.map(function(p){return '<img alt="'+esc(iTitle(i))+'" src="'+p+'">'}).join('');
+  var mine=isMine(i);
+  return '<div class="bar"><button class="back" data-act="back" aria-label="'+esc(t('back'))+'">&larr;</button><h2>'+esc(t('item'))+'</h2>'+langBtn()+'</div><div class="page">'+
+  '<div class="gallery">'+ph1+'</div>'+
+  (i.sold?'<div class="tag" style="align-self:flex-start;background:var(--ink);color:var(--bg)">'+esc(t('soldBanner'))+'</div>':'')+
+  '<div><div style="display:flex;align-items:center;justify-content:space-between;gap:10px"><div class="price" style="font-size:28px">'+money(i.price)+'</div>'+heartBtn(i,true)+'</div><h1 style="font-size:21px;margin-top:4px">'+esc(iTitle(i))+'</h1><div class="meta"><span class="tag">'+esc(catL(i.cat))+'</span> &nbsp;'+esc(cityL(i.city))+' · '+esc(ago(i.ts))+'</div></div>'+
+  '<p style="margin:0;overflow-wrap:anywhere">'+esc(iDesc(i)||t('noDesc'))+'</p>'+
+  '<div class="seller"><div class="av">'+ini(sName(i))+'</div><div><b>'+esc(sName(i))+'</b><div class="meta">'+esc(t('sellerIn',{c:cityL(i.city)}))+'</div></div></div>'+
+  (i.sellerId==='seed'?'<p class="note" style="margin:0">'+esc(t('sample'))+'</p>':'')+
+  (mine?'<button class="btn" data-act="sold" data-id="'+esc(i.id)+'">'+esc(t(i.sold?'markAvail':'markSold'))+'</button><button class="btn ghost" data-act="del" data-id="'+esc(i.id)+'">'+esc(t('removeListing'))+'</button>':(i.sold?'':'<button class="btn" data-act="chat" data-id="'+esc(i.id)+'">'+esc(t('messageSeller'))+'</button>'))+'</div>';
+};
+function chatBody(i){
+  if(S.msgs.length)return S.msgs.map(function(x){return '<div class="bub '+(x.from===UID?'me':'them')+'">'+esc(x.text)+'</div>'}).join('');
+  return '<div class="empty" style="padding:16px 0 4px">'+esc(t('chatHello',{n:chatOther().split(' ')[0]}))+'</div><div class="quick">'+
+   [t('q1'),t('q2',{p:money(Math.round(i.price*0.9))}),t('q3')].map(function(x){return '<button class="chip" data-act="quick" data-v="'+esc(x)+'">'+esc(x)+'</button>'}).join('')+'</div>';
+}
+function chatOther(){
+  var i=byId(S.activeChat&&S.activeChat.listingId);if(!i)return '';
+  if(S.activeChat.buyerId===UID)return sName(i);
+  return uName(S.activeChat.buyerId)||t('buyerFallback');
+}
+V.chat=function(){
+  var i=byId(S.activeChat&&S.activeChat.listingId);if(!i)return V.msgs();
+  return '<div class="bar"><button class="back" data-act="back" aria-label="'+esc(t('back'))+'">&larr;</button><h2>'+esc(chatOther())+'</h2>'+langBtn()+'</div><div class="page" style="gap:10px">'+
+  '<button class="mini" data-act="open" data-id="'+esc(i.id)+'"><img alt="" src="'+img(i)+'"><div><b>'+esc(iTitle(i))+'</b><span class="meta">'+money(i.price)+' · '+esc(cityL(i.city))+'</span></div></button>'+
+  (i.sellerId==='seed'?'<p class="note" style="margin:0">'+esc(t('sample'))+'</p>':'')+'<div class="msgs" id="msgs">'+chatBody(i)+'</div></div>'+
+  '<form class="fixed composer" id="chatForm"><div><input class="in" id="chatIn" placeholder="'+esc(t('writeMsg'))+'" autocomplete="off" aria-label="'+esc(t('msgLbl'))+'"><button class="btn small" type="submit">'+esc(t('send'))+'</button></div></form>';
+};
+function myChats(){
+  var all={},k;
+  for(k in S.chatsB)all[k]=S.chatsB[k];
+  for(k in S.chatsS)all[k]=S.chatsS[k];
+  return Object.keys(all).map(function(id){var c=all[id];c.id=id;return c}).sort(function(a,b){return (b.ts||0)-(a.ts||0)});
+}
+V.msgs=function(){
+  var list=myChats().map(function(c){
+    var i=byId(c.listingId);if(!i)return '';
+    var other=c.buyerId===UID?sName(i):(uName(c.buyerId)||t('buyerFallback'));
+    return '<button class="mini" data-act="inbox" data-id="'+esc(c.listingId)+'" data-b="'+esc(c.buyerId)+'"><div class="av">'+ini(other)+'</div><div><b>'+esc(other)+' · '+esc(iTitle(i))+'</b><span class="meta">'+(c.lastFrom===UID?esc(t('you')):'')+esc(c.lastText||'')+'</span></div></button>'}).join('');
+  if(!list)list='<div class="empty"><b>'+esc(t('noMsgs'))+'</b><br>'+esc(t('noMsgsHint'))+'</div>';
+  return '<div class="bar"><h2>'+esc(t('navMsgs'))+'</h2>'+langBtn()+'</div><div class="page" style="gap:10px">'+list+'</div>';
+};
+V.post=function(){
+  var e=S.err,d=S.draft;
+  return '<div class="bar"><h2>'+esc(t('sellTitle'))+'</h2>'+langBtn()+'</div><form class="page" id="postForm" novalidate>'+
+  '<div><b style="font-size:14px">'+esc(t('photos'))+'</b> <span class="meta">'+esc(t('upTo4'))+'</span><div class="photos" id="photoRow" style="margin-top:6px">'+photosHtml()+'</div><span class="err">'+esc(e.photos||'')+'</span></div>'+
+  '<label for="pTitle">'+esc(t('whatSelling'))+'<input class="in" id="pTitle" maxlength="80" placeholder="'+esc(t('titlePh'))+'" value="'+esc(d.title||'')+'"><span class="err">'+esc(e.title||'')+'</span></label>'+
+  '<div class="row2"><label for="pPrice">'+esc(t('priceUsd'))+'<input class="in" id="pPrice" inputmode="decimal" placeholder="50" value="'+esc(d.price||'')+'"><span class="err">'+esc(e.price||'')+'</span></label>'+
+  '<label for="pCat">'+esc(t('category'))+'<select class="in" id="pCat">'+CATS.map(function(c){return '<option value="'+c+'"'+(d.cat===c?' selected':'')+'>'+esc(catL(c))+'</option>'}).join('')+'</select></label></div>'+
+  '<label for="pCity">'+esc(t('city'))+'<select class="in" id="pCity">'+CITIES.map(function(c){return '<option value="'+c+'"'+((d.city||(UID&&S.users[UID]&&S.users[UID].city))===c?' selected':'')+'>'+esc(cityL(c))+'</option>'}).join('')+'</select></label>'+
+  '<label for="pDesc">'+esc(t('desc'))+'<textarea class="in" id="pDesc" maxlength="400" placeholder="'+esc(t('descPh'))+'">'+esc(d.desc||'')+'</textarea></label>'+
+  '<button class="btn" id="postBtn" type="submit">'+esc(t('postBtn'))+'</button></form>';
+};
+function photosHtml(){
+  return S.draft.photos.map(function(p,n){return '<img class="ph" alt="'+esc(t('photoN',{n:n+1}))+'" src="'+p.thumb+'">'}).join('')+
+  (S.draft.photos.length<4?'<label class="add" for="pFile">'+esc(t('addPhoto'))+'<input id="pFile" type="file" accept="image/*" multiple hidden></label>':'');
+}
+V.me=function(){
+  if(!isReg())return '<div class="langrow">'+langBtn()+'</div><div class="hero"><h1>'+esc(t('guestTitle'))+'</h1><p>'+esc(t('guestP'))+'</p><button class="btn" data-act="reg">'+esc(t('signIn'))+'</button></div>';
+  var u=S.users[UID];
+  var mine=S.listings.filter(isMine);
+  var sv=S.listings.filter(function(i){return S.priv.favs.indexOf(i.id)>-1});
+  return '<div class="bar"><h2>'+esc(t('myProfile'))+'</h2>'+langBtn()+'</div><div class="page"><div class="seller"><div class="av">'+ini(u.name)+'</div><div><b>'+esc(u.name)+'</b><div class="meta">'+esc(S.priv.phone||'')+(S.priv.phone?' · ':'')+esc(cityL(u.city))+'</div></div></div>'+
+  '<button class="btn ghost" data-act="editp">'+esc(t('editProfile'))+'</button>'+
+  '<h3>'+esc(t('myListings',{n:mine.length}))+'</h3>'+(mine.length?'<div class="grid">'+mine.map(cardHtml).join('')+'</div>':'<div class="empty">'+esc(t('noneYet'))+'</div>')+
+  '<h3>'+esc(t('savedItems',{n:sv.length}))+'</h3>'+(sv.length?'<div class="grid">'+sv.map(cardHtml).join('')+'</div>':'<div class="empty">'+esc(t('noSaved'))+'</div>')+'<button class="btn ghost" data-act="signout">'+esc(t('signOut'))+'</button></div>';
+};
+
+function render(){
+  document.documentElement.lang=LANG;
+  var app=document.getElementById('app');
+  app.innerHTML=V[S.view]()+(S.view==='welcome'||S.view==='chat'||S.view==='auth'?'':tabs());
+  if(S.view==='chat'){var m=document.getElementById('msgs');if(m&&m.lastElementChild)m.lastElementChild.scrollIntoView({block:'end'})}
+}
+/* Called when shared data changes. Keeps typed text safe by only redrawing the data parts. */
+function refreshData(){
+  var v=S.view;
+  if(v==='home'){var g=document.getElementById('grid');if(g)g.innerHTML=gridHtml();var b=document.querySelector('.banner');if(!b&&bannerHtml()){render()}}
+  else if(v==='chat'){var i=byId(S.activeChat&&S.activeChat.listingId),m=document.getElementById('msgs');if(i&&m){m.innerHTML=chatBody(i);if(m.lastElementChild)m.lastElementChild.scrollIntoView({block:'end'})}}
+  else if(v==='detail'||v==='msgs'||v==='me'){var y=window.scrollY;render();window.scrollTo(0,y)}
+}
+function keepForms(){
+  var g=function(id){var e=document.getElementById(id);return e?e.value:null};
+  if(document.getElementById('postForm')){S.draft.title=g('pTitle');S.draft.price=g('pPrice');S.draft.cat=g('pCat');S.draft.city=g('pCity');S.draft.desc=g('pDesc')}
+}
+function setLang(){
+  keepForms();
+  LANG=LANG==='en'?'so':'en';
+  try{localStorage.setItem('banana_lang',LANG)}catch(e){}
+  var rn=document.getElementById('rName'),rp=document.getElementById('rPhone'),rc=document.getElementById('rCity'),ci=document.getElementById('chatIn');
+  var keep=rn?{n:rn.value,p:rp.value,c:rc.value}:null,keepC=ci?ci.value:null;
+  S.err={};render();
+  if(keep){document.getElementById('rName').value=keep.n;document.getElementById('rPhone').value=keep.p;document.getElementById('rCity').value=keep.c}
+  if(keepC!==null){var c2=document.getElementById('chatIn');if(c2)c2.value=keepC}
+}
+
+/* ---------- Gates, photos, chats ---------- */
+function setUser(u){USER=u;UID=u?u.id:null}
+function gate(key){
+  if(S.noCfg){toast(t('setupP'));return true}
+  if(!USER){S.reg=t(key);S.err={};go('auth');return true}
+  if(!isReg()){S.reg=t(key);S.editing=false;go('welcome');return true}
+  return false;
+}
+function loadPhotos(){}
+function pubUrl(p){return SB.storage.from('photos').getPublicUrl(p).data.publicUrl}
+function enc(im,max,q,limit){
+  var s=Math.min(1,max/Math.max(im.width,im.height)),c=document.createElement('canvas');
+  c.width=Math.max(1,Math.round(im.width*s));c.height=Math.max(1,Math.round(im.height*s));
+  var x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,c.width,c.height);x.drawImage(im,0,0,c.width,c.height);
+  var d=c.toDataURL('image/jpeg',q);
+  while(d.length>limit&&q>.35){q-=.1;d=c.toDataURL('image/jpeg',q)}
+  return d;
+}
+function debounce(fn,ms){var h;return function(){clearTimeout(h);h=setTimeout(fn,ms)}}
+
+/* ---------- Loading data from Supabase ---------- */
+async function loadListings(){
+  var a=await SB.from('listings').select('*').order('created_at',{ascending:false}).limit(300);
+  var b=await SB.from('listing_photos').select('listing_id,path,position').order('position',{ascending:true});
+  if(a.error)return false;
+  var ph={},paths={};
+  (b.data||[]).forEach(function(r){(ph[r.listing_id]=ph[r.listing_id]||[]).push(pubUrl(r.path));(paths[r.listing_id]=paths[r.listing_id]||[]).push(r.path)});
+  S.paths=paths;S.photosOf=ph;
+  S.listings=(a.data||[]).map(function(r){
+    var u=ph[r.id]||[];
+    return {id:r.id,title:r.title,desc:r.description||'',price:Number(r.price),city:r.city,cat:r.category,sellerId:r.seller_id,sellerName:r.seller_name||'',
+      ts:Date.parse(r.created_at),sold:!!r.sold,so:r.title_so?{title:r.title_so,desc:r.desc_so||''}:null,thumb:u[0]||null,photoCount:u.length};
+  });
+  return true;
+}
+async function loadProfiles(){
+  var r=await SB.from('profiles').select('id,name,city');
+  var m={};(r.data||[]).forEach(function(p){m[p.id]={name:p.name,city:p.city}});
+  S.users=m;
+}
+async function loadChats(){
+  if(!USER){S.chatsB={};S.chatsS={};return}
+  var c=await SB.from('chats').select('*').order('last_at',{ascending:false});
+  var m={};
+  (c.data||[]).forEach(function(r){m[r.id]={id:r.id,listingId:r.listing_id,buyerId:r.buyer_id,sellerId:r.seller_id,lastText:r.last_text||'',lastFrom:r.last_sender,ts:Date.parse(r.last_at)}});
+  S.chatsB=m;S.chatsS={};
+}
+async function loadMine(){
+  if(!USER){S.priv={favs:[],phone:''};S.chatsB={};S.chatsS={};return}
+  var p=await SB.from('private_profiles').select('phone').eq('id',USER.id).maybeSingle();
+  var f=await SB.from('favorites').select('listing_id').eq('user_id',USER.id);
+  S.priv={phone:(p.data&&p.data.phone)||'',favs:(f.data||[]).map(function(r){return r.listing_id})};
+  await loadChats();
+}
+
+/* ---------- Chats ---------- */
+function normMsg(r){return {id:r.id,from:r.sender_id,text:r.body,ts:Date.parse(r.created_at)}}
+function addMsg(r){
+  if(S.msgs.some(function(x){return x.id===r.id}))return;
+  S.msgs=S.msgs.concat([normMsg(r)]).sort(function(a,b){return a.ts-b.ts});
+  refreshData();
+}
+async function loadMsgs(chatId){
+  var r=await SB.from('messages').select('*').eq('chat_id',chatId).order('created_at',{ascending:true});
+  if(r.error||!S.activeChat||S.activeChat.id!==chatId)return;
+  S.msgs=(r.data||[]).map(normMsg);refreshData();
+}
+function stopMsgs(){if(S.msgChan&&SB){SB.removeChannel(S.msgChan)}S.msgChan=null}
+function watchMsgs(chatId){
+  stopMsgs();
+  S.msgChan=SB.channel('chat-'+chatId).on('postgres_changes',{event:'INSERT',schema:'public',table:'messages',filter:'chat_id=eq.'+chatId},function(p){
+    if(S.activeChat&&S.activeChat.id===chatId)addMsg(p.new);
+  }).subscribe();
+}
+async function openChat(listingId,buyerId,from){
+  stopMsgs();
+  var ex=myChats().filter(function(c){return c.listingId===listingId&&c.buyerId===buyerId})[0];
+  S.msgs=[];S.activeChat={id:ex?ex.id:null,listingId:listingId,buyerId:buyerId};S.chatFrom=from;
+  S.view='chat';render();window.scrollTo(0,0);
+  if(ex){watchMsgs(ex.id);await loadMsgs(ex.id)}
+}
+function sendMsg(text){
+  text=(text||'').trim();
+  var ac=S.activeChat,l=ac&&byId(ac.listingId);
+  if(!text||!l||!SB||!USER)return;
+  var mineCount=S.msgs.filter(function(m){return m.from===UID}).length;
+  queue(async function(){
+    if(!ac.id){
+      var c=await SB.from('chats').insert({listing_id:l.id,buyer_id:USER.id,seller_id:l.sellerId||null}).select().single();
+      if(c.error)throw c.error;
+      ac.id=c.data.id;watchMsgs(ac.id);
+    }
+    var m=await SB.from('messages').insert({chat_id:ac.id,sender_id:USER.id,body:text}).select().single();
+    if(m.error)throw m.error;
+    addMsg(m.data);
+    await loadChats();
+  }).then(function(){
+    if(!l.sellerId){
+      var reply=t('r'+((mineCount%4)+1));
+      setTimeout(function(){SB.rpc('sample_reply',{p_chat:ac.id,p_body:reply}).then(function(){return loadMsgs(ac.id)}).then(loadChats)},1100);
+    }
+  }).catch(function(){toast(t('msgFail'))});
+}
+
+/* ---------- Saved items ---------- */
+function toggleFav(id){
+  if(!USER){S.reg=t('needFav');S.err={};go('auth');return}
+  var on=S.priv.favs.indexOf(id)>-1;
+  S.priv.favs=on?S.priv.favs.filter(function(x){return x!==id}):S.priv.favs.concat([id]);
+  refreshData();
+  var op=on?SB.from('favorites').delete().eq('user_id',USER.id).eq('listing_id',id):SB.from('favorites').insert({user_id:USER.id,listing_id:id});
+  op.then(function(r){
+    if(r.error){S.priv.favs=on?S.priv.favs.concat([id]):S.priv.favs.filter(function(x){return x!==id});refreshData();toast(t('saveFail'))}
+  });
+}
+
+/* ---------- Sign in screen ---------- */
+V.auth=function(){
+  var e=S.err,up=S.authMode==='up';
+  return '<div class="langrow">'+langBtn()+'</div><div class="hero">'+BANANA.replace('width="34" height="34"','width="72" height="72"')+'<h1>'+esc(t(up?'signUp':'authH1'))+'</h1></div>'+
+  '<form class="page" id="authForm" novalidate>'+
+  (S.reg?'<p class="err" style="text-align:center">'+esc(S.reg)+'</p>':'')+
+  '<label for="aEmail">'+esc(t('email'))+'<input class="in" id="aEmail" type="email" autocomplete="email" inputmode="email"><span class="err">'+esc(e.email||'')+'</span></label>'+
+  '<label for="aPass">'+esc(t('password'))+'<input class="in" id="aPass" type="password" autocomplete="'+(up?'new-password':'current-password')+'"><span class="meta" style="margin:0">'+esc(t('passHint'))+'</span><span class="err">'+esc(e.pass||'')+'</span></label>'+
+  '<button class="btn" type="submit">'+esc(t(up?'signUp':'signIn'))+'</button>'+
+  '<button class="link" type="button" data-act="authmode">'+esc(t(up?'haveAcc':'noAcc'))+'</button>'+
+  '<button class="link" type="button" data-act="guest">'+esc(t('guest'))+'</button></form>';
+};
+
+/* ---------- Events ---------- */
+document.addEventListener('click',function(ev){
+  var b=ev.target.closest('[data-act]');if(!b)return;
+  var a=b.dataset.act,v=b.dataset.v,id=b.dataset.id;
+  if(a==='lang'){setLang()}
+  else if(a==='city'){S.city=v;render()}
+  else if(a==='cat'){S.cat=v;render()}
+  else if(a==='open'){go('detail',{sel:id})}
+  else if(a==='back'){if(S.view==='chat')go(S.chatFrom==='msgs'?'msgs':'detail');else go('home')}
+  else if(a==='tab'){
+    if(v==='post'&&gate('needPost'))return;
+    if(v==='msgs'&&gate('needMsg'))return;
+    S.err={};S.reg='';go(v);
+  }
+  else if(a==='chat'){if(gate('needMsg'))return;S.sel=id;openChat(id,UID,'detail')}
+  else if(a==='inbox'){S.sel=id;openChat(id,b.dataset.b,'msgs')}
+  else if(a==='quick'){sendMsg(v)}
+  else if(a==='guest'){S.guest=true;S.reg='';go('home')}
+  else if(a==='reg'){S.reg='';S.err={};S.editing=false;go(USER?'welcome':'auth')}
+  else if(a==='authmode'){S.authMode=S.authMode==='up'?'in':'up';S.err={};render()}
+  else if(a==='signout'){SB.auth.signOut().then(function(){S.reg='';go('home')})}
+  else if(a==='editp'){S.reg='';S.err={};S.editing=true;go('welcome')}
+  else if(a==='cancel'){S.editing=false;go('me')}
+  else if(a==='fav'){toggleFav(id)}
+  else if(a==='savedf'){S.saved=!S.saved;render()}
+  else if(a==='sold'){
+    var l=byId(id);if(!l||!isMine(l))return;
+    SB.from('listings').update({sold:!l.sold}).eq('id',id).then(function(r){
+      if(r.error){toast(t('saveFail'));return}
+      l.sold=!l.sold;toast(t(l.sold?'soldMsg':'availMsg'));refreshData();
+    });
+  }
+  else if(a==='del'){
+    var l2=byId(id);if(!l2||!isMine(l2))return;
+    var paths=(S.paths&&S.paths[id])||[];
+    (paths.length?SB.storage.from('photos').remove(paths):Promise.resolve()).then(function(){
+      return SB.from('listings').delete().eq('id',id);
+    }).then(function(r){
+      if(r&&r.error){toast(t('saveFail'));return}
+      S.listings=S.listings.filter(function(x){return x.id!==id});toast(t('removed'));go('home');
+    });
+  }
+});
+document.addEventListener('input',function(ev){
+  if(ev.target.id==='q'){S.q=ev.target.value;document.getElementById('grid').innerHTML=gridHtml()}
+});
+document.addEventListener('change',function(ev){
+  if(ev.target.id==='pFile'){
+    var files=[].slice.call(ev.target.files).slice(0,4-S.draft.photos.length);
+    files.forEach(function(f){
+      var r=new FileReader();
+      r.onload=function(){
+        var im=new Image();
+        im.onload=function(){
+          if(S.draft.photos.length<4)S.draft.photos.push({full:enc(im,900,.8,260000),thumb:enc(im,200,.6,20000)});
+          var row=document.getElementById('photoRow');if(row)row.innerHTML=photosHtml();
+        };
+        im.src=r.result;
+      };
+      r.readAsDataURL(f);
+    });
+  }
+});
+document.addEventListener('submit',function(ev){
+  ev.preventDefault();
+  var f=ev.target.id;
+  if(f==='authForm'){
+    var em=document.getElementById('aEmail').value.trim(),pw=document.getElementById('aPass').value;
+    S.err={};
+    if(!/^\S+@\S+\.\S+$/.test(em))S.err.email=t('errEmail');
+    if(pw.length<6)S.err.pass=t('errPass');
+    if(S.err.email||S.err.pass){render();document.getElementById('aEmail').value=em;return}
+    var up=S.authMode==='up';
+    (up?SB.auth.signUp({email:em,password:pw}):SB.auth.signInWithPassword({email:em,password:pw})).then(function(r){
+      if(r.error){S.err={pass:t('authFail')};render();document.getElementById('aEmail').value=em;return}
+      if(!r.data.session){S.reg=t('checkMail');S.authMode='in';render();return}
+      setUser(r.data.session.user);
+      return loadMine().then(function(){
+        S.reg='';
+        if(!isReg()){S.editing=false;go('welcome')}else go('home');
+      });
+    }).catch(function(){S.err={pass:t('authFail')};render()});
+  }
+  else if(f==='regForm'){
+    var n=document.getElementById('rName').value.trim(),p=document.getElementById('rPhone').value.trim(),c=document.getElementById('rCity').value;
+    S.err={};
+    if(n.length<2)S.err.name=t('errName');
+    if(p.replace(/\D/g,'').length<7)S.err.phone=t('errPhone');
+    if(S.err.name||S.err.phone){render();return}
+    if(!USER){go('auth');return}
+    var wasEdit=S.editing;
+    SB.from('profiles').upsert({id:USER.id,name:n,city:c}).then(function(r1){
+      if(r1.error)throw r1.error;
+      return SB.from('private_profiles').upsert({id:USER.id,phone:p});
+    }).then(function(r2){
+      if(r2.error)throw r2.error;
+      S.priv.phone=p;S.users[USER.id]={name:n,city:c};
+      S.reg='';S.editing=false;S.city='All';
+      toast(wasEdit?t('profSaved'):t('welcome',{n:n.split(' ')[0]}));go(wasEdit?'me':'home');
+    }).catch(function(){toast(t('saveFail'))});
+  }
+  else if(f==='chatForm'){var i=document.getElementById('chatIn');var tx=i.value;i.value='';sendMsg(tx);i.focus()}
+  else if(f==='postForm'){
+    if(S.posting)return;
+    var d=S.draft;
+    d.title=document.getElementById('pTitle').value.trim();d.price=document.getElementById('pPrice').value.trim();
+    d.cat=document.getElementById('pCat').value;d.city=document.getElementById('pCity').value;d.desc=document.getElementById('pDesc').value.trim();
+    S.err={};
+    if(!d.photos.length)S.err.photos=t('errPhotos');
+    if(d.title.length<3)S.err.title=t('errTitle');
+    var pr=parseFloat(d.price);if(!(pr>0))S.err.price=t('errPrice');
+    if(Object.keys(S.err).length){render();return}
+    S.posting=true;var pb=document.getElementById('postBtn');if(pb){pb.disabled=true;pb.textContent=t('posting')}
+    var lid=(window.crypto&&crypto.randomUUID)?crypto.randomUUID():'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g,function(ch){var r=Math.random()*16|0;return (ch==='x'?r:(r&3|8)).toString(16)});
+    var photos=d.photos.slice(),uploaded=[];
+    (async function(){
+      try{
+        var ins=await SB.from('listings').insert({id:lid,seller_id:USER.id,title:d.title,description:d.desc,price:pr,city:d.city,category:d.cat});
+        if(ins.error)throw ins.error;
+        for(var n=0;n<photos.length;n++){
+          var blob=await (await fetch(photos[n].full)).blob();
+          var path=USER.id+'/'+lid+'/'+n+'.jpg';
+          var up=await SB.storage.from('photos').upload(path,blob,{contentType:'image/jpeg',upsert:true});
+          if(up.error)throw up.error;
+          uploaded.push({listing_id:lid,path:path,position:n});
+        }
+        var pr2=await SB.from('listing_photos').insert(uploaded);
+        if(pr2.error)throw pr2.error;
+        await loadListings();
+        S.posting=false;S.draft={photos:[]};S.city='All';S.cat='All';S.q='';S.saved=false;
+        toast(t('live'));go('detail',{sel:lid});
+      }catch(e){
+        try{await SB.from('listings').delete().eq('id',lid)}catch(e2){}
+        S.posting=false;toast(t('saveFail'));
+        var pb2=document.getElementById('postBtn');if(pb2){pb2.disabled=false;pb2.textContent=t('postBtn')}
+      }
+    })();
+  }
+});
+
+/* ---------- Start ---------- */
+render();
+(async function init(){
+  try{
+    if(!CFG.url||!CFG.anonKey||/YOUR/i.test(CFG.url+CFG.anonKey)||!window.supabase){S.noCfg=true;S.ready=true;render();return}
+    SB=window.supabase.createClient(CFG.url,CFG.anonKey);
+    var sess=await SB.auth.getSession();
+    setUser(sess.data&&sess.data.session?sess.data.session.user:null);
+    SB.auth.onAuthStateChange(function(ev,session){
+      var nu=session?session.user:null;
+      if((nu&&nu.id)===(USER&&USER.id))return;
+      setUser(nu);
+      setTimeout(function(){loadMine().then(function(){refreshData()})},0);
+    });
+    await Promise.all([loadListings(),loadProfiles()]);
+    if(USER)await loadMine();
+    S.ready=true;
+    if(USER&&!isReg()&&!S.welcomed){S.welcomed=true;S.view='welcome'}
+    render();
+    var rl=debounce(function(){loadListings().then(refreshData)},400);
+    SB.channel('banana-public')
+      .on('postgres_changes',{event:'*',schema:'public',table:'listings'},rl)
+      .on('postgres_changes',{event:'*',schema:'public',table:'listing_photos'},rl)
+      .on('postgres_changes',{event:'*',schema:'public',table:'profiles'},function(){loadProfiles().then(refreshData)})
+      .subscribe();
+    SB.channel('banana-chats')
+      .on('postgres_changes',{event:'*',schema:'public',table:'chats'},function(){loadChats().then(function(){if(S.view==='msgs')refreshData()})})
+      .subscribe();
+  }catch(e){S.ready=true;S.noCfg=!SB;render()}
+})();
+</script>
+</body>
+</html>
