@@ -28,6 +28,12 @@ body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15p
   padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 96px}
 button,input,select,textarea{font:inherit;color:inherit}
 button{cursor:pointer}
+input,select,textarea{font-size:16px}
+a,button{touch-action:manipulation;-webkit-tap-highlight-color:rgba(255,210,31,.35)}
+.altlink{display:flex;align-items:center;justify-content:center;box-sizing:border-box;min-height:48px;text-align:center;text-decoration:none}
+.seg{display:grid;grid-template-columns:1fr 1fr;border:2px solid var(--ink);border-radius:14px;overflow:hidden}
+.seg a{display:flex;align-items:center;justify-content:center;min-height:46px;padding:8px;text-align:center;text-decoration:none;color:var(--ink);font-family:var(--display);font-weight:600;font-size:16px}
+.seg a[aria-current="true"]{background:var(--accent);color:var(--accent-ink)}
 :focus-visible{outline:3px solid var(--leaf);outline-offset:2px}
 .shell{max-width:480px;margin:0 auto;min-width:0}
 h1,h2,h3{font-family:var(--display);margin:0;text-wrap:balance;line-height:1.15}
@@ -233,6 +239,7 @@ function isReg(){return !!(UID&&S.users[UID])}
 function isMine(l){return !!UID&&l.sellerId===UID}
 function toast(m){var b=document.getElementById('toastBox');b.innerHTML='<div class="toast">'+esc(m)+'</div>';setTimeout(function(){b.innerHTML=''},2600)}
 function go(v,extra){
+  if(v!=='auth'&&(location.hash==='#sign-in'||location.hash==='#create-account')){try{history.replaceState(null,'',location.pathname+location.search)}catch(e){}}
   S.view=v;if(extra)for(var k in extra)S[k]=extra[k];
   if(v!=='chat'){stopMsgs();S.activeChat=null;S.msgs=[]}
   render();window.scrollTo(0,0);
@@ -528,13 +535,35 @@ V.auth=function(){
   var e=S.err,up=S.authMode==='up';
   return '<div class="langrow">'+langBtn()+'</div><div class="hero">'+BANANA.replace('width="34" height="34"','width="72" height="72"')+'<h1>'+esc(t(up?'signUp':'authH1'))+'</h1></div>'+
   '<form class="page" id="authForm" novalidate>'+
+  '<div class="seg"><a href="#sign-in" data-act="authmode" data-v="in"'+(up?'':' aria-current="true"')+'>'+esc(t('signIn'))+'</a><a href="#create-account" data-act="authmode" data-v="up"'+(up?' aria-current="true"':'')+'>'+esc(t('signUp'))+'</a></div>'+
   (S.reg?'<p class="err" style="text-align:center">'+esc(S.reg)+'</p>':'')+
   '<label for="aEmail">'+esc(t('email'))+'<input class="in" id="aEmail" type="email" autocomplete="email" inputmode="email"><span class="err">'+esc(e.email||'')+'</span></label>'+
   '<label for="aPass">'+esc(t('password'))+'<input class="in" id="aPass" type="password" autocomplete="'+(up?'new-password':'current-password')+'"><span class="meta" style="margin:0">'+esc(t('passHint'))+'</span><span class="err">'+esc(e.pass||'')+'</span></label>'+
   '<button class="btn" type="submit">'+esc(t(up?'signUp':'signIn'))+'</button>'+
-  '<button class="link" type="button" data-act="authmode">'+esc(t(up?'haveAcc':'noAcc'))+'</button>'+
+  '<a class="btn ghost altlink" href="#'+(up?'sign-in':'create-account')+'" data-act="authmode" data-v="'+(up?'in':'up')+'">'+esc(t(up?'haveAcc':'noAcc'))+'</a>'+
   '<button class="link" type="button" data-act="guest">'+esc(t('guest'))+'</button></form>';
 };
+
+/* ---------- Sign in / create account switch ---------- */
+function setAuthMode(mode){
+  mode=mode==='up'?'up':'in';
+  var em=document.getElementById('aEmail'),pw=document.getElementById('aPass');
+  var keepE=em?em.value:'',keepP=pw?pw.value:'';
+  S.authMode=mode;S.err={};S.view='auth';
+  render();window.scrollTo(0,0);
+  var e2=document.getElementById('aEmail'),p2=document.getElementById('aPass');
+  if(e2)e2.value=keepE;if(p2)p2.value=keepP;
+  try{var hh=mode==='up'?'#create-account':'#sign-in';if(location.hash!==hh)history.replaceState(null,'',hh)}catch(e){}
+}
+/* Backup route: if a tap ever fails to reach the click handler, the link still changes the web address and this takes over. */
+function routeHash(){
+  if(USER)return;
+  if(location.hash==='#create-account')setAuthMode('up');
+  else if(location.hash==='#sign-in')setAuthMode('in');
+}
+window.addEventListener('hashchange',routeHash);
+window.addEventListener('error',function(e){var m=String(e.message||'');if(!m||/^script error/i.test(m))return;try{toast('Error: '+m.slice(0,140))}catch(x){}});
+window.addEventListener('unhandledrejection',function(e){var r=e.reason,m=String((r&&r.message)||r||'');if(!m)return;try{toast('Error: '+m.slice(0,140))}catch(x){}});
 
 /* ---------- Events ---------- */
 document.addEventListener('click',function(ev){
@@ -555,7 +584,7 @@ document.addEventListener('click',function(ev){
   else if(a==='quick'){sendMsg(v)}
   else if(a==='guest'){S.guest=true;S.reg='';go('home')}
   else if(a==='reg'){S.reg='';S.err={};S.editing=false;go(USER?'welcome':'auth')}
-  else if(a==='authmode'){S.authMode=S.authMode==='up'?'in':'up';S.err={};render()}
+  else if(a==='authmode'){ev.preventDefault();setAuthMode(v)}
   else if(a==='signout'){SB.auth.signOut().then(function(){S.reg='';go('home')})}
   else if(a==='editp'){S.reg='';S.err={};S.editing=true;go('welcome')}
   else if(a==='cancel'){S.editing=false;go('me')}
@@ -677,7 +706,7 @@ document.addEventListener('submit',function(ev){
 });
 
 /* ---------- Start ---------- */
-render();
+render();routeHash();
 (async function init(){
   try{
     if(!CFG.url||!CFG.anonKey||/YOUR/i.test(CFG.url+CFG.anonKey)||!window.supabase){S.noCfg=true;S.ready=true;render();return}
