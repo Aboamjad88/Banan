@@ -329,8 +329,21 @@ V.detail=function(){
   '<p style="margin:0;overflow-wrap:anywhere">'+esc(iDesc(i)||t('noDesc'))+'</p>'+
   '<div class="seller"><div class="av">'+ini(sName(i))+'</div><div><b>'+esc(sName(i))+'</b><div class="meta">'+esc(t('sellerIn',{c:cityL(i.city)}))+'</div></div></div>'+
   (i.sellerId==='seed'?'<p class="note" style="margin:0">'+esc(t('sample'))+'</p>':'')+
-  (mine?'<button class="btn" data-act="sold" data-id="'+esc(i.id)+'">'+esc(t(i.sold?'markAvail':'markSold'))+'</button><button class="btn ghost" data-act="del" data-id="'+esc(i.id)+'">'+esc(t('removeListing'))+'</button>':(i.sold?'':'<button class="btn" data-act="chat" data-id="'+esc(i.id)+'">'+esc(t('messageSeller'))+'</button>'))+'</div>';
+  (mine?'<button class="btn" data-act="sold" data-id="'+esc(i.id)+'">'+esc(t(i.sold?'markAvail':'markSold'))+'</button><button class="btn ghost" data-act="del" data-id="'+esc(i.id)+'">'+esc(t('removeListing'))+'</button>':(i.sold?'':'<button class="btn" data-act="chat" data-id="'+esc(i.id)+'">'+esc(t('messageSeller'))+'</button>'))+(mine||!i.sellerId?'':'<button class="btn ghost" data-act="report" data-id="'+esc(i.id)+'">'+(LANG==='so'?'Ka warbixi alaabtan':'Report listing')+'</button>')+'</div>';
 };
+V.report=function(){
+  var l=byId(S.sel);
+  if(!l)return V.home();
+  var so=LANG==='so';
+  return '<div class="bar"><button class="back" data-act="back" aria-label="Back">&larr;</button><h2>'+(so?'Warbixin dir':'Report listing')+'</h2>'+langBtn()+'</div>'+
+   '<div class="page"><p style="margin:0">'+esc(iTitle(l))+'</p><p class="note">'+(so?'Warbixintaada waxaa si gaar ah loogu eegi doonaa maamulka.':'Only the Banana administrators can review this report. Reports do not automatically remove listings.')+'</p>'+
+   '<form class="page" id="reportForm">'+
+   '<label for="reportReason">'+(so?'Sababta':'Reason')+'<select class="in" id="reportReason" required><option value="scam">'+(so?'Khiyaano':'Suspected scam')+'</option><option value="inappropriate">'+(so?'Wax aan habboonayn':'Inappropriate content')+'</option><option value="prohibited">'+(so?'Alaab mamnuuc ah':'Prohibited item')+'</option><option value="spam">Spam / duplicate</option><option value="other">'+(so?'Wax kale':'Other')+'</option></select></label>'+
+   '<label for="reportDetails">'+(so?'Faahfaahin (ikhtiyaari)':'Details (optional)')+'<textarea class="in" id="reportDetails" maxlength="500" placeholder="'+(so?'Sharax dhibaatada':'Briefly explain the problem')+'"></textarea></label>'+
+   (S.reportError?'<p class="err">'+esc(S.reportError)+'</p>':'')+
+   '<button class="btn" type="submit"'+(S.reportBusy?' disabled':'')+'>'+(S.reportBusy?'Sending…':(so?'Dir warbixinta':'Submit report'))+'</button></form></div>';
+};
+
 function chatBody(i){
   if(S.msgs.length)return S.msgs.map(function(x){return '<div class="bub '+(x.from===UID?'me':'them')+'">'+esc(x.text)+'</div>'}).join('');
   return '<div class="empty" style="padding:16px 0 4px">'+esc(t('chatHello',{n:chatOther().split(' ')[0]}))+'</div><div class="quick">'+
@@ -587,12 +600,13 @@ document.addEventListener('click',function(ev){
   else if(a==='city'){S.city=v;render()}
   else if(a==='cat'){S.cat=v;render()}
   else if(a==='open'){go('detail',{sel:id})}
-  else if(a==='back'){if(S.view==='chat')go(S.chatFrom==='msgs'?'msgs':'detail');else go('home')}
+  else if(a==='back'){if(S.view==='chat')go(S.chatFrom==='msgs'?'msgs':'detail');else if(S.view==='report')go('detail');else go('home')}
   else if(a==='tab'){
     if(v==='post'&&gate('needPost'))return;
     if(v==='msgs'&&gate('needMsg'))return;
     S.err={};S.reg='';go(v);
   }
+  else if(a==='report'){if(gate('needMsg'))return;S.sel=id;S.reportError='';S.reportBusy=false;go('report')}
   else if(a==='chat'){if(gate('needMsg'))return;S.sel=id;openChat(id,UID,'detail')}
   else if(a==='inbox'){S.sel=id;openChat(id,b.dataset.b,'msgs')}
   else if(a==='quick'){sendMsg(v)}
@@ -668,6 +682,19 @@ document.addEventListener('submit',function(ev){
       try{history.replaceState(null,'',location.pathname)}catch(e){}
       toast('Password updated successfully');go(isReg()?'home':'welcome');
     }).catch(function(){S.recoveryBusy=false;S.reg='Could not update password. Try again.';render()});
+  }
+  else if(f==='reportForm'){
+    if(S.reportBusy||!USER)return;
+    var l=byId(S.sel);
+    if(!l||!l.sellerId||l.sellerId===USER.id){S.reportError='This listing cannot be reported.';render();return}
+    var reason=document.getElementById('reportReason').value;
+    var details=document.getElementById('reportDetails').value.trim();
+    S.reportBusy=true;S.reportError='';
+    SB.from('reports').insert({reporter_id:USER.id,listing_id:l.id,reported_seller_id:l.sellerId,listing_title:l.title,reason:reason,details:details}).then(function(r){
+      S.reportBusy=false;
+      if(r.error){S.reportError=r.error.code==='23505'?'You have already reported this listing.':'Report not sent. Please try again.';render();return}
+      toast('Report submitted for review');go('detail');
+    }).catch(function(){S.reportBusy=false;S.reportError='Report not sent. Please try again.';render()});
   }
   else if(f==='authForm'){
     var em=document.getElementById('aEmail').value.trim(),pw=document.getElementById('aPass').value;
