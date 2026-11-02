@@ -218,13 +218,14 @@ function ph(cat){
   var s='<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="'+(HUES[cat]||'#FFE066')+'"/><g fill="none" stroke="#2E2208" stroke-width="3.5" stroke-linejoin="round" stroke-linecap="round">'+(GLYPH[cat]||'')+'</g></svg>';
   return 'data:image/svg+xml;utf8,'+encodeURIComponent(s);
 }
+var RECOVERY_LINK=/(?:[?#&])type=recovery(?:&|$)/.test(location.href);
 var BANANA='<svg width="34" height="34" viewBox="0 0 48 48" aria-hidden="true"><path d="M6 14c2 20 20 30 38 20-12 4-26-2-30-22-1-4-8-3-8 2z" fill="#FFD21F" stroke="#2E2208" stroke-width="3" stroke-linejoin="round"/><path d="M6 12l-2-5" stroke="#4F7A1A" stroke-width="4" stroke-linecap="round"/></svg>';
 
 /* ---------- State. Shared data comes from the db capability: listings, users, chats ---------- */
 var SB=null,USER=null,UID=null,ME=null,CANWRITE=null,CFG=window.BANANA_CONFIG||{};
 var S={view:'home',city:'All',cat:'All',q:'',sel:null,draft:{photos:[]},reg:'',err:{},saved:false,
   ready:false,listings:[],users:{},usersLoaded:false,priv:{favs:[],phone:''},chatsB:{},chatsS:{},
-  guest:false,noCfg:false,authMode:'in',paths:{},msgChan:null,welcomed:false,editing:false,photosOf:{},msgs:[],activeChat:null,chatFrom:'detail',posting:false,unMsgs:null};
+  guest:false,noCfg:false,authMode:'in',recovering:RECOVERY_LINK,recoveryBusy:false,paths:{},msgChan:null,welcomed:false,editing:false,photosOf:{},msgs:[],activeChat:null,chatFrom:'detail',posting:false,unMsgs:null};
 
 function esc(x){return String(x).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
 function byId(id){return S.listings.filter(function(i){return String(i.id)===String(id)})[0]}
@@ -239,7 +240,8 @@ function isReg(){return !!(UID&&S.users[UID])}
 function isMine(l){return !!UID&&l.sellerId===UID}
 function toast(m){var b=document.getElementById('toastBox');b.innerHTML='<div class="toast">'+esc(m)+'</div>';setTimeout(function(){b.innerHTML=''},2600)}
 function go(v,extra){
-  if(v!=='auth'&&(location.hash==='#sign-in'||location.hash==='#create-account')){try{history.replaceState(null,'',location.pathname+location.search)}catch(e){}}
+  if(v!=='auth'&&v!=='recover'&&(location.hash==='#sign-in'||location.hash==='#create-account')){try{history.replaceState(null,'',location.pathname+location.search)}catch(e){}}
+  if(S.recovering&&v!=='recover')return;
   S.view=v;if(extra)for(var k in extra)S[k]=extra[k];
   if(v!=='chat'){stopMsgs();S.activeChat=null;S.msgs=[]}
   render();window.scrollTo(0,0);
@@ -389,7 +391,7 @@ V.me=function(){
 function render(){
   document.documentElement.lang=LANG;
   var app=document.getElementById('app');
-  app.innerHTML=V[S.view]()+(S.view==='welcome'||S.view==='chat'||S.view==='auth'?'':tabs());
+  app.innerHTML=V[S.view]()+(S.view==='welcome'||S.view==='chat'||S.view==='auth'||S.view==='recover'?'':tabs());
   if(S.view==='chat'){var m=document.getElementById('msgs');if(m&&m.lastElementChild)m.lastElementChild.scrollIntoView({block:'end'})}
 }
 /* Called when shared data changes. Keeps typed text safe by only redrawing the data parts. */
@@ -530,6 +532,17 @@ function toggleFav(id){
   });
 }
 
+/* Password recovery is a special authenticated session, not account creation. */
+V.recover=function(){
+  return '<div class="langrow">'+langBtn()+'</div><div class="hero">'+BANANA.replace('width="34" height="34"','width="72" height="72"')+
+    '<h1>'+(LANG==='so'?'Samee furaha sirta ah ee cusub':'Set a new password')+'</h1><p>'+(LANG==='so'?'Akoonkaaga jira ayaa la haynayaa.':'Your existing Banana account will be kept.')+'</p></div>'+
+    '<form class="page" id="recoverForm" novalidate><label for="newPassword">'+(LANG==='so'?'Furaha sirta ah ee cusub':'New password')+
+    '<input class="in" id="newPassword" type="password" autocomplete="new-password" minlength="8" required></label>'+
+    '<label for="confirmPassword">'+(LANG==='so'?'Ku celi furaha sirta ah':'Confirm new password')+
+    '<input class="in" id="confirmPassword" type="password" autocomplete="new-password" minlength="8" required></label>'+
+    (S.reg?'<p class="err" role="alert">'+esc(S.reg)+'</p>':'')+
+    '<button class="btn" type="submit"'+(S.recoveryBusy?' disabled':'')+'>'+(S.recoveryBusy?'Saving…':(LANG==='so'?'Kaydi furaha cusub':'Save new password'))+'</button></form>';
+};
 /* ---------- Sign in screen ---------- */
 V.auth=function(){
   var e=S.err,up=S.authMode==='up';
@@ -541,7 +554,8 @@ V.auth=function(){
   '<label for="aPass">'+esc(t('password'))+'<input class="in" id="aPass" type="password" autocomplete="'+(up?'new-password':'current-password')+'"><span class="meta" style="margin:0">'+esc(t('passHint'))+'</span><span class="err">'+esc(e.pass||'')+'</span></label>'+
   '<button class="btn" type="submit">'+esc(t(up?'signUp':'signIn'))+'</button>'+
   '<a class="btn ghost altlink" href="#'+(up?'sign-in':'create-account')+'" data-act="authmode" data-v="'+(up?'in':'up')+'">'+esc(t(up?'haveAcc':'noAcc'))+'</a>'+
-  '<button class="link" type="button" data-act="guest">'+esc(t('guest'))+'</button></form>';
+  (up?'':'<button class="link" type="button" data-act="forgot">'+(LANG==='so'?'Ma illowday furaha sirta ah?':'Forgot password?')+'</button>')+
+   '<button class="link" type="button" data-act="guest">'+esc(t('guest'))+'</button></form>';
 };
 
 /* ---------- Sign in / create account switch ---------- */
@@ -557,7 +571,7 @@ function setAuthMode(mode){
 }
 /* Backup route: if a tap ever fails to reach the click handler, the link still changes the web address and this takes over. */
 function routeHash(){
-  if(USER)return;
+  if(USER||S.recovering)return;
   if(location.hash==='#create-account')setAuthMode('up');
   else if(location.hash==='#sign-in')setAuthMode('in');
 }
@@ -585,6 +599,15 @@ document.addEventListener('click',function(ev){
   else if(a==='guest'){S.guest=true;S.reg='';go('home')}
   else if(a==='reg'){S.reg='';S.err={};S.editing=false;go(USER?'welcome':'auth')}
   else if(a==='authmode'){ev.preventDefault();setAuthMode(v)}
+  else if(a==='forgot'){
+    var el=document.getElementById('aEmail'),email=el&&el.value.trim();
+    if(!/^\S+@\S+\.\S+$/.test(email)){S.err={email:t('errEmail')};render();return}
+    if(!SB){toast('Connection unavailable. Try again.');return}
+    b.disabled=true;SB.auth.resetPasswordForEmail(email,{redirectTo:location.origin+location.pathname}).then(function(r){
+      S.reg=r.error?('Could not send email: '+r.error.message):'If this email is registered, check your inbox for a password reset link.';S.err={};render();
+      var e=document.getElementById('aEmail');if(e)e.value=email;
+    }).catch(function(){S.reg='Could not send recovery email. Try again later.';render()});
+  }
   else if(a==='signout'){SB.auth.signOut().then(function(){S.reg='';go('home')})}
   else if(a==='editp'){S.reg='';S.err={};S.editing=true;go('welcome')}
   else if(a==='cancel'){S.editing=false;go('me')}
@@ -631,7 +654,22 @@ document.addEventListener('change',function(ev){
 document.addEventListener('submit',function(ev){
   ev.preventDefault();
   var f=ev.target.id;
-  if(f==='authForm'){
+  if(f==='recoverForm'){
+    if(S.recoveryBusy)return;
+    var pw1=document.getElementById('newPassword').value,pw2=document.getElementById('confirmPassword').value;
+    if(pw1.length<8){S.reg='Use at least 8 characters.';render();return}
+    if(pw1!==pw2){S.reg='Passwords do not match.';render();return}
+    if(!SB||!USER){S.reg='This recovery link is invalid or expired. Request a fresh recovery email.';render();return}
+    S.recoveryBusy=true;S.reg='';var save=document.querySelector('#recoverForm button[type=submit]');if(save){save.disabled=true;save.textContent='Saving…'}
+    SB.auth.updateUser({password:pw1}).then(function(r){
+      S.recoveryBusy=false;
+      if(r.error){S.reg='Could not reset password: '+r.error.message;render();return}
+      S.recovering=false;RECOVERY_LINK=false;S.reg='';
+      try{history.replaceState(null,'',location.pathname)}catch(e){}
+      toast('Password updated successfully');go(isReg()?'home':'welcome');
+    }).catch(function(){S.recoveryBusy=false;S.reg='Could not update password. Try again.';render()});
+  }
+  else if(f==='authForm'){
     var em=document.getElementById('aEmail').value.trim(),pw=document.getElementById('aPass').value;
     S.err={};
     if(!/^\S+@\S+\.\S+$/.test(em))S.err.email=t('errEmail');
@@ -715,6 +753,7 @@ render();routeHash();
     setUser(sess.data&&sess.data.session?sess.data.session.user:null);
     SB.auth.onAuthStateChange(function(ev,session){
       var nu=session?session.user:null;
+      if(ev==='PASSWORD_RECOVERY'){S.recovering=true;S.view='recover';S.reg='';render()}
       if((nu&&nu.id)===(USER&&USER.id))return;
       setUser(nu);
       setTimeout(function(){loadMine().then(function(){refreshData()})},0);
@@ -722,7 +761,8 @@ render();routeHash();
     await Promise.all([loadListings(),loadProfiles()]);
     if(USER)await loadMine();
     S.ready=true;
-    if(USER&&!isReg()&&!S.welcomed){S.welcomed=true;S.view='welcome'}
+    if(S.recovering){S.view='recover';if(!USER)S.reg='Recovery session not found. Request a new reset link.'}
+    else if(USER&&!isReg()&&!S.welcomed){S.welcomed=true;S.view='welcome'}
     render();
     var rl=debounce(function(){loadListings().then(refreshData)},400);
     SB.channel('banana-public')
