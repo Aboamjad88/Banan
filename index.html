@@ -803,5 +803,18 @@ render();routeHash();
   }catch(e){S.ready=true;S.noCfg=!SB;render()}
 })();
 </script>
+  <script>
+    // Banana Admin Dashboard
+    const BANANA_ADMIN_ID = 'd672de55-424b-4624-8e88-d93b4b1c7747';
+
+function isBananaAdmin() {
+  return Boolean(
+    typeof USER !== 'undefined' &&
+    USER &&
+    USER.id === BANANA_ADMIN_ID
+  );
+}
+    console.log('Banana admin:', isBananaAdmin());
+    </script>
 </body>
 </html>
