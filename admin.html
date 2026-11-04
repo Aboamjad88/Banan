@@ -48,8 +48,11 @@
   <script>
   const SUPABASE_URL = "https://htmxeutnqgrzzrwchbpp.supabase.co";
 const SUPABASE_KEY = "sb_publishable_Wqpz0eG907sFI3ev4_0IWg_pMxSHBcp";
-    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);    
+    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);   
+   document.getElementById("status").textContent =
+  "Supabase client initialized. Admin access not yet verified."; 
     </script>
+  
 </body>
   
   
