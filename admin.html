@@ -51,6 +51,19 @@ const SUPABASE_KEY = "sb_publishable_Wqpz0eG907sFI3ev4_0IWg_pMxSHBcp";
     const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);   
    document.getElementById("status").textContent =
   "Supabase client initialized. Admin access not yet verified."; 
+    async function checkAdmin() {
+  const { data, error } = await supabaseClient.auth.getUser();
+  const status = document.getElementById("status");
+
+  if (error || !data.user) {
+    status.textContent = "Please sign in as an administrator.";
+    return;
+  }
+
+  status.textContent = "Signed in. Administrator access not yet verified.";
+}
+
+checkAdmin();
     </script>
   
 </body>
