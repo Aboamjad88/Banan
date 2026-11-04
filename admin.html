@@ -94,6 +94,30 @@ checkAdmin();
   console.log("Admin reports:", data);
 }
     loadReports();
+    async function adminSignIn() {
+  const email = document.getElementById("adminEmail").value.trim();
+  const password = document.getElementById("adminPassword").value;
+  const status = document.getElementById("status");
+
+  const { data, error } = await supabaseClient.auth.signInWithPassword({
+    email,
+    password
+  });
+
+  if (error) {
+    status.textContent = "Sign in failed: " + error.message;
+    return;
+  }
+
+  if (data.user.id !== "d672de55-424b-4624-8e88-d93b4b1c7747") {
+    await supabaseClient.auth.signOut();
+    status.textContent = "Access denied. Administrators only.";
+    return;
+  }
+
+  status.textContent = "Administrator signed in.";
+  await loadReports();
+}
     </script>
   
 </body>
