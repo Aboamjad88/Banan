@@ -68,6 +68,26 @@ const SUPABASE_KEY = "sb_publishable_Wqpz0eG907sFI3ev4_0IWg_pMxSHBcp";
 }
 
 checkAdmin();
+    async function loadReports() {
+  const { data: { user }, error: authError } =
+    await supabaseClient.auth.getUser();
+
+  if (authError || !user ||
+      user.id !== "d672de55-424b-4624-8e88-d93b4b1c7747") {
+    return;
+  }
+
+  const { data, error } = await supabaseClient
+    .from("reports")
+    .select("id, listing_title, reason, details, status");
+
+  if (error) {
+    console.error("Could not load reports:", error.message);
+    return;
+  }
+
+  console.log("Admin reports:", data);
+}
     </script>
   
 </body>
