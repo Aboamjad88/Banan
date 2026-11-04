@@ -59,6 +59,10 @@ const SUPABASE_KEY = "sb_publishable_Wqpz0eG907sFI3ev4_0IWg_pMxSHBcp";
     status.textContent = "Please sign in as an administrator.";
     return;
   }
+      if (data.user.id !== "d672de55-424b-4624-8e88-d93b4b1c7747") {
+  status.textContent = "Access denied. Administrators only.";
+  return;
+}
 
   status.textContent = "Signed in. Administrator access not yet verified.";
 }
