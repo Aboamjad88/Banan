@@ -143,8 +143,7 @@ var TXT={
   item:'Item',back:'Back',messageSeller:'Message seller',removeListing:'Remove my listing',removed:'Listing removed',
   sellerIn:'Seller in {c}',noDesc:'No description.',sellerFallback:'Seller',buyerFallback:'Buyer',
   chatHello:'Say hello to {n}. Tap a message to start.',q1:'Is this still available?',q2:'Can you do {p}?',q3:'Where can we meet?',
-  sample:'Sample listing. Replies are automatic.',writeMsg:'Write a message',send:'Send',msgLbl:'Message',you:'You: ',msgFail:'Message not sent. Try again.',
-  r1:'Yes, it is still available.',r2:'Thanks for asking. Where are you in the city?',r3:'I can lower it a little if you come today.',r4:'Sure, we can meet somewhere public. Tomorrow morning works for me.',
+  sample:'Sample listing. No real seller is available to reply.',writeMsg:'Write a message',send:'Send',msgLbl:'Message',you:'You: ',msgFail:'Message not sent. Try again.',
   noMsgs:'No messages yet',noMsgsHint:'Open an item and tap Message seller.',
   sellTitle:'Sell something',photos:'Photos',upTo4:'(up to 4)',addPhoto:'+ Add photo',photoN:'Photo {n}',
   whatSelling:'What are you selling?',titlePh:'Example: Samsung phone, like new',priceUsd:'Price (USD)',category:'Category',city:'City',
@@ -178,8 +177,7 @@ var TXT={
   item:'Alaabta',back:'Dib',messageSeller:'Fariin u dir iibiyaha',removeListing:'Ka saar alaabtayda',removed:'Alaabta waa laga saaray',
   sellerIn:'Iibiye ku yaal {c}',noDesc:'Faahfaahin ma jirto.',sellerFallback:'Iibiye',buyerFallback:'Iibsade',
   chatHello:'U salaan {n}. Taabo fariin si aad u bilowdo.',q1:'Weli ma diyaar baa?',q2:'Ma ka dhigi kartaa {p}?',q3:'Xaggee isla kulmi karnaa?',
-  sample:'Alaab tijaabo ah. Jawaabuhu waa kuwo toos ah.',writeMsg:'Qor fariin',send:'Dir',msgLbl:'Fariin',you:'Adiga: ',msgFail:'Fariinta lama dirin. Mar kale isku day.',
-  r1:'Haa, weli waa diyaar.',r2:'Mahadsanid. Meeshee ka joogtaa magaalada?',r3:'Qiimaha waan yaree karaa haddii aad maanta timaado.',r4:'Hubaal, waxaan ku kulmi karnaa meel dadweyne. Berri subax ayaa ii fiican.',
+  sample:'Alaab tijaabo ah. Ma jiro iibiye dhab ah oo ka jawaabaya.',writeMsg:'Qor fariin',send:'Dir',msgLbl:'Fariin',you:'Adiga: ',msgFail:'Fariinta lama dirin. Mar kale isku day.',
   noMsgs:'Weli fariimo ma jiraan',noMsgsHint:'Fur alaab oo taabo Fariin u dir iibiyaha.',
   sellTitle:'Iibi wax',photos:'Sawirro',upTo4:'(ugu badnaan 4)',addPhoto:'+ Ku dar sawir',photoN:'Sawir {n}',
   whatSelling:'Maxaad iibinaysaa?',titlePh:'Tusaale: Telefoon Samsung, cusub oo kale',priceUsd:'Qiimaha (USD)',category:'Nooca',city:'Magaalada',
@@ -328,7 +326,7 @@ V.detail=function(){
   '<div><div style="display:flex;align-items:center;justify-content:space-between;gap:10px"><div class="price" style="font-size:28px">'+money(i.price)+'</div>'+heartBtn(i,true)+'</div><h1 style="font-size:21px;margin-top:4px">'+esc(iTitle(i))+'</h1><div class="meta"><span class="tag">'+esc(catL(i.cat))+'</span> &nbsp;'+esc(cityL(i.city))+' · '+esc(ago(i.ts))+'</div></div>'+
   '<p style="margin:0;overflow-wrap:anywhere">'+esc(iDesc(i)||t('noDesc'))+'</p>'+
   '<div class="seller"><div class="av">'+ini(sName(i))+'</div><div><b>'+esc(sName(i))+'</b><div class="meta">'+esc(t('sellerIn',{c:cityL(i.city)}))+'</div></div></div>'+
-  (i.sellerId==='seed'?'<p class="note" style="margin:0">'+esc(t('sample'))+'</p>':'')+
+  (!i.sellerId?'<p class="note" style="margin:0">'+esc(t('sample'))+'</p>':'')+
   (mine?'<button class="btn" data-act="sold" data-id="'+esc(i.id)+'">'+esc(t(i.sold?'markAvail':'markSold'))+'</button><button class="btn ghost" data-act="del" data-id="'+esc(i.id)+'">'+esc(t('removeListing'))+'</button>':(i.sold?'':'<button class="btn" data-act="chat" data-id="'+esc(i.id)+'">'+esc(t('messageSeller'))+'</button>'))+(mine||!i.sellerId?'':'<button class="btn ghost" data-act="report" data-id="'+esc(i.id)+'">'+(LANG==='so'?'Ka warbixi alaabtan':'Report listing')+'</button>')+'</div>';
 };
 V.report=function(){
@@ -358,7 +356,7 @@ V.chat=function(){
   var i=byId(S.activeChat&&S.activeChat.listingId);if(!i)return V.msgs();
   return '<div class="bar"><button class="back" data-act="back" aria-label="'+esc(t('back'))+'">&larr;</button><h2>'+esc(chatOther())+'</h2>'+langBtn()+'</div><div class="page" style="gap:10px">'+
   '<button class="mini" data-act="open" data-id="'+esc(i.id)+'"><img alt="" src="'+img(i)+'"><div><b>'+esc(iTitle(i))+'</b><span class="meta">'+money(i.price)+' · '+esc(cityL(i.city))+'</span></div></button>'+
-  (i.sellerId==='seed'?'<p class="note" style="margin:0">'+esc(t('sample'))+'</p>':'')+'<div class="msgs" id="msgs">'+chatBody(i)+'</div></div>'+
+  (!i.sellerId?'<p class="note" style="margin:0">'+esc(t('sample'))+'</p>':'')+'<div class="msgs" id="msgs">'+chatBody(i)+'</div></div>'+
   '<form class="fixed composer" id="chatForm"><div><input class="in" id="chatIn" placeholder="'+esc(t('writeMsg'))+'" autocomplete="off" aria-label="'+esc(t('msgLbl'))+'"><button class="btn small" type="submit">'+esc(t('send'))+'</button></div></form>';
 };
 function myChats(){
@@ -514,7 +512,6 @@ function sendMsg(text){
   text=(text||'').trim();
   var ac=S.activeChat,l=ac&&byId(ac.listingId);
   if(!text||!l||!SB||!USER)return;
-  var mineCount=S.msgs.filter(function(m){return m.from===UID}).length;
   queue(async function(){
     if(!ac.id){
       var c=await SB.from('chats').insert({listing_id:l.id,buyer_id:USER.id,seller_id:l.sellerId||null}).select().single();
@@ -525,11 +522,6 @@ function sendMsg(text){
     if(m.error)throw m.error;
     addMsg(m.data);
     await loadChats();
-  }).then(function(){
-    if(!l.sellerId){
-      var reply=t('r'+((mineCount%4)+1));
-      setTimeout(function(){SB.rpc('sample_reply',{p_chat:ac.id,p_body:reply}).then(function(){return loadMsgs(ac.id)}).then(loadChats)},1100);
-    }
   }).catch(function(){toast(t('msgFail'))});
 }
 
