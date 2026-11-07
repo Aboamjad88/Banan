@@ -28,6 +28,12 @@ body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15p
   padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 96px}
 button,input,select,textarea{font:inherit;color:inherit}
 button{cursor:pointer}
+.modal-back{position:fixed;inset:0;z-index:60;background:rgba(23,18,10,.55);display:flex;align-items:center;justify-content:center;padding:max(16px,env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) max(16px,env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
+.modal{width:100%;max-width:360px;background:var(--surface);color:var(--ink);border:2px solid var(--ink);border-radius:18px;padding:20px;display:flex;flex-direction:column;gap:18px}
+.modal p{margin:0;font-size:17px;font-weight:700;line-height:1.4}
+.modal-btns{display:flex;flex-wrap:wrap;gap:10px}
+.modal-btns .btn{flex:1 1 130px;width:auto}
+.btn.danger{background:var(--danger);border-color:var(--danger);color:#fff}
 input,select,textarea{font-size:16px}
 a,button{touch-action:manipulation;-webkit-tap-highlight-color:rgba(255,210,31,.35)}
 .altlink{display:flex;align-items:center;justify-content:center;box-sizing:border-box;min-height:48px;text-align:center;text-decoration:none}
@@ -143,7 +149,8 @@ var TXT={
   item:'Item',back:'Back',messageSeller:'Message seller',removeListing:'Remove my listing',removed:'Listing removed',
   sellerIn:'Seller in {c}',noDesc:'No description.',sellerFallback:'Seller',buyerFallback:'Buyer',
   chatHello:'Say hello to {n}. Tap a message to start.',q1:'Is this still available?',q2:'Can you do {p}?',q3:'Where can we meet?',
-  sample:'Sample listing. No real seller is available to reply.',writeMsg:'Write a message',send:'Send',msgLbl:'Message',you:'You: ',msgFail:'Message not sent. Try again.',
+  sample:'Sample listing. Replies are automatic.',writeMsg:'Write a message',send:'Send',msgLbl:'Message',you:'You: ',msgFail:'Message not sent. Try again.',
+  r1:'Yes, it is still available.',r2:'Thanks for asking. Where are you in the city?',r3:'I can lower it a little if you come today.',r4:'Sure, we can meet somewhere public. Tomorrow morning works for me.',
   noMsgs:'No messages yet',noMsgsHint:'Open an item and tap Message seller.',
   sellTitle:'Sell something',photos:'Photos',upTo4:'(up to 4)',addPhoto:'+ Add photo',photoN:'Photo {n}',
   whatSelling:'What are you selling?',titlePh:'Example: Samsung phone, like new',priceUsd:'Price (USD)',category:'Category',city:'City',
@@ -156,7 +163,7 @@ var TXT={
   savedItems:'Saved items ({n})',noSaved:'Tap the heart on an item to save it.',soldBanner:'This item has been sold.',heartAdd:'Save item',heartDel:'Remove from saved',
   loading:'Loading listings…',noDb:'Shared listings are not available here. Open this page from its Claude link and sign in.',
   readOnly:'You can look around, but not post or message. Ask the owner for edit access.',saveFail:'Could not save. Check your internet and try again.',
-  email:'Email',password:'Password',passHint:'At least 6 characters',signIn:'Sign in',signUp:'Create account',haveAcc:'Already have an account? Sign in',noAcc:'New here? Create an account',signOut:'Sign out',authH1:'Sign in to Banana',errEmail:'Enter a valid email.',errPass:'Use at least 6 characters.',checkMail:'Check your email to confirm your account, then sign in.',authFail:'Could not sign in. Check your email and password.',needFav:'Sign in to save items.',setupH:'Almost ready',setupP:'Open config.js and add your Supabase URL and key. The README explains how.',
+  email:'Email',password:'Password',passHint:'At least 6 characters',signIn:'Sign in',signUp:'Create account',haveAcc:'Already have an account? Sign in',noAcc:'New here? Create an account',signOut:'Sign out',authH1:'Sign in to Banana',errEmail:'Enter a valid email.',errPass:'Use at least 6 characters.',checkMail:'Check your email to confirm your account, then sign in.',authFail:'Could not sign in. Check your email and password.',needFav:'Sign in to save items.',delConfirm:'Are you sure you want to remove this listing? This action cannot be undone.',delYes:'Yes, remove',setupH:'Almost ready',setupP:'Open config.js and add your Supabase URL and key. The README explains how.',
   c:{Electronics:'Electronics',Furniture:'Furniture',Clothes:'Clothes',Vehicles:'Vehicles',Home:'Home'},
   city_:{Mogadishu:'Mogadishu',Hargeisa:'Hargeisa',Kismayo:'Kismayo',Baidoa:'Baidoa',Garowe:'Garowe',Bosaso:'Bosaso',Beledweyne:'Beledweyne',Galkayo:'Galkayo'}
  },
@@ -177,7 +184,8 @@ var TXT={
   item:'Alaabta',back:'Dib',messageSeller:'Fariin u dir iibiyaha',removeListing:'Ka saar alaabtayda',removed:'Alaabta waa laga saaray',
   sellerIn:'Iibiye ku yaal {c}',noDesc:'Faahfaahin ma jirto.',sellerFallback:'Iibiye',buyerFallback:'Iibsade',
   chatHello:'U salaan {n}. Taabo fariin si aad u bilowdo.',q1:'Weli ma diyaar baa?',q2:'Ma ka dhigi kartaa {p}?',q3:'Xaggee isla kulmi karnaa?',
-  sample:'Alaab tijaabo ah. Ma jiro iibiye dhab ah oo ka jawaabaya.',writeMsg:'Qor fariin',send:'Dir',msgLbl:'Fariin',you:'Adiga: ',msgFail:'Fariinta lama dirin. Mar kale isku day.',
+  sample:'Alaab tijaabo ah. Jawaabuhu waa kuwo toos ah.',writeMsg:'Qor fariin',send:'Dir',msgLbl:'Fariin',you:'Adiga: ',msgFail:'Fariinta lama dirin. Mar kale isku day.',
+  r1:'Haa, weli waa diyaar.',r2:'Mahadsanid. Meeshee ka joogtaa magaalada?',r3:'Qiimaha waan yaree karaa haddii aad maanta timaado.',r4:'Hubaal, waxaan ku kulmi karnaa meel dadweyne. Berri subax ayaa ii fiican.',
   noMsgs:'Weli fariimo ma jiraan',noMsgsHint:'Fur alaab oo taabo Fariin u dir iibiyaha.',
   sellTitle:'Iibi wax',photos:'Sawirro',upTo4:'(ugu badnaan 4)',addPhoto:'+ Ku dar sawir',photoN:'Sawir {n}',
   whatSelling:'Maxaad iibinaysaa?',titlePh:'Tusaale: Telefoon Samsung, cusub oo kale',priceUsd:'Qiimaha (USD)',category:'Nooca',city:'Magaalada',
@@ -190,7 +198,7 @@ var TXT={
   savedItems:'Alaabta la keydiyay ({n})',noSaved:'Taabo wadnaha alaab si aad u keydiso.',soldBanner:'Alaabtan waa la iibiyay.',heartAdd:'Keydi alaabta',heartDel:'Ka saar keydka',
   loading:'Alaabta waa la soo rarayaa…',noDb:'Alaabta la wadaago halkan lama heli karo. Fur bogga xiriirkiisa Claude oo gal.',
   readOnly:'Waad eegi kartaa, laakiin ma soo dhigi kartid ama fariin ma diri kartid. Weydii mulkiilaha ogolaansho wax-ka-bedelid.',saveFail:'Lama keydin karin. Hubi internetkaaga oo mar kale isku day.',
-  email:'Iimaylka',password:'Furaha sirta ah',passHint:'Ugu yaraan 6 xaraf',signIn:'Gal',signUp:'Samee akoon',haveAcc:'Akoon ma leedahay? Gal',noAcc:'Cusub? Samee akoon',signOut:'Ka bax',authH1:'Gal Banana',errEmail:'Geli iimayl sax ah.',errPass:'Isticmaal ugu yaraan 6 xaraf.',checkMail:'Iimaylkaaga hubi si aad u xaqiijiso akoonkaaga, ka dibna gal.',authFail:'Lama geli karin. Hubi iimaylkaaga iyo furahaaga.',needFav:'Gal si aad alaab u keydiso.',setupH:'Wuu dhawyahay',setupP:'Fur config.js oo ku dar URL-ka iyo furaha Supabase. README ayaa sharaxaya sida.',
+  email:'Iimaylka',password:'Furaha sirta ah',passHint:'Ugu yaraan 6 xaraf',signIn:'Gal',signUp:'Samee akoon',haveAcc:'Akoon ma leedahay? Gal',noAcc:'Cusub? Samee akoon',signOut:'Ka bax',authH1:'Gal Banana',errEmail:'Geli iimayl sax ah.',errPass:'Isticmaal ugu yaraan 6 xaraf.',checkMail:'Iimaylkaaga hubi si aad u xaqiijiso akoonkaaga, ka dibna gal.',authFail:'Lama geli karin. Hubi iimaylkaaga iyo furahaaga.',needFav:'Gal si aad alaab u keydiso.',delConfirm:'Ma hubtaa inaad ka saarto alaabtan? Tallaabadan dib looma celin karo.',delYes:'Haa, ka saar',setupH:'Wuu dhawyahay',setupP:'Fur config.js oo ku dar URL-ka iyo furaha Supabase. README ayaa sharaxaya sida.',
   c:{Electronics:'Elektaroonig',Furniture:'Agabka guriga',Clothes:'Dhar',Vehicles:'Gawaarida',Home:'Alaabta jikada'},
   city_:{Mogadishu:'Muqdisho',Hargeisa:'Hargeysa',Kismayo:'Kismaayo',Baidoa:'Baydhabo',Garowe:'Garoowe',Bosaso:'Boosaaso',Beledweyne:'Beledweyne',Galkayo:'Galkacyo'}
  }
@@ -216,14 +224,13 @@ function ph(cat){
   var s='<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="'+(HUES[cat]||'#FFE066')+'"/><g fill="none" stroke="#2E2208" stroke-width="3.5" stroke-linejoin="round" stroke-linecap="round">'+(GLYPH[cat]||'')+'</g></svg>';
   return 'data:image/svg+xml;utf8,'+encodeURIComponent(s);
 }
-var RECOVERY_LINK=/(?:[?#&])type=recovery(?:&|$)/.test(location.href);
 var BANANA='<svg width="34" height="34" viewBox="0 0 48 48" aria-hidden="true"><path d="M6 14c2 20 20 30 38 20-12 4-26-2-30-22-1-4-8-3-8 2z" fill="#FFD21F" stroke="#2E2208" stroke-width="3" stroke-linejoin="round"/><path d="M6 12l-2-5" stroke="#4F7A1A" stroke-width="4" stroke-linecap="round"/></svg>';
 
 /* ---------- State. Shared data comes from the db capability: listings, users, chats ---------- */
 var SB=null,USER=null,UID=null,ME=null,CANWRITE=null,CFG=window.BANANA_CONFIG||{};
 var S={view:'home',city:'All',cat:'All',q:'',sel:null,draft:{photos:[]},reg:'',err:{},saved:false,
   ready:false,listings:[],users:{},usersLoaded:false,priv:{favs:[],phone:''},chatsB:{},chatsS:{},
-  guest:false,noCfg:false,authMode:'in',recovering:RECOVERY_LINK,recoveryBusy:false,paths:{},msgChan:null,welcomed:false,editing:false,photosOf:{},msgs:[],activeChat:null,chatFrom:'detail',posting:false,unMsgs:null};
+  guest:false,noCfg:false,authMode:'in',paths:{},msgChan:null,welcomed:false,editing:false,photosOf:{},msgs:[],activeChat:null,chatFrom:'detail',posting:false,unMsgs:null};
 
 function esc(x){return String(x).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
 function byId(id){return S.listings.filter(function(i){return String(i.id)===String(id)})[0]}
@@ -238,8 +245,7 @@ function isReg(){return !!(UID&&S.users[UID])}
 function isMine(l){return !!UID&&l.sellerId===UID}
 function toast(m){var b=document.getElementById('toastBox');b.innerHTML='<div class="toast">'+esc(m)+'</div>';setTimeout(function(){b.innerHTML=''},2600)}
 function go(v,extra){
-  if(v!=='auth'&&v!=='recover'&&(location.hash==='#sign-in'||location.hash==='#create-account')){try{history.replaceState(null,'',location.pathname+location.search)}catch(e){}}
-  if(S.recovering&&v!=='recover')return;
+  if(v!=='auth'&&(location.hash==='#sign-in'||location.hash==='#create-account')){try{history.replaceState(null,'',location.pathname+location.search)}catch(e){}}
   S.view=v;if(extra)for(var k in extra)S[k]=extra[k];
   if(v!=='chat'){stopMsgs();S.activeChat=null;S.msgs=[]}
   render();window.scrollTo(0,0);
@@ -326,22 +332,9 @@ V.detail=function(){
   '<div><div style="display:flex;align-items:center;justify-content:space-between;gap:10px"><div class="price" style="font-size:28px">'+money(i.price)+'</div>'+heartBtn(i,true)+'</div><h1 style="font-size:21px;margin-top:4px">'+esc(iTitle(i))+'</h1><div class="meta"><span class="tag">'+esc(catL(i.cat))+'</span> &nbsp;'+esc(cityL(i.city))+' · '+esc(ago(i.ts))+'</div></div>'+
   '<p style="margin:0;overflow-wrap:anywhere">'+esc(iDesc(i)||t('noDesc'))+'</p>'+
   '<div class="seller"><div class="av">'+ini(sName(i))+'</div><div><b>'+esc(sName(i))+'</b><div class="meta">'+esc(t('sellerIn',{c:cityL(i.city)}))+'</div></div></div>'+
-  (!i.sellerId?'<p class="note" style="margin:0">'+esc(t('sample'))+'</p>':'')+
-  (mine?'<button class="btn" data-act="sold" data-id="'+esc(i.id)+'">'+esc(t(i.sold?'markAvail':'markSold'))+'</button><button class="btn ghost" data-act="del" data-id="'+esc(i.id)+'">'+esc(t('removeListing'))+'</button>':(i.sold?'':'<button class="btn" data-act="chat" data-id="'+esc(i.id)+'">'+esc(t('messageSeller'))+'</button>'))+(mine||!i.sellerId?'':'<button class="btn ghost" data-act="report" data-id="'+esc(i.id)+'">'+(LANG==='so'?'Ka warbixi alaabtan':'Report listing')+'</button>')+'</div>';
+  (i.sellerId==='seed'?'<p class="note" style="margin:0">'+esc(t('sample'))+'</p>':'')+
+  (mine?'<button class="btn" data-act="sold" data-id="'+esc(i.id)+'">'+esc(t(i.sold?'markAvail':'markSold'))+'</button><button class="btn ghost" data-act="del" data-id="'+esc(i.id)+'">'+esc(t('removeListing'))+'</button>':(i.sold?'':'<button class="btn" data-act="chat" data-id="'+esc(i.id)+'">'+esc(t('messageSeller'))+'</button>'))+'</div>';
 };
-V.report=function(){
-  var l=byId(S.sel);
-  if(!l)return V.home();
-  var so=LANG==='so';
-  return '<div class="bar"><button class="back" data-act="back" aria-label="Back">&larr;</button><h2>'+(so?'Warbixin dir':'Report listing')+'</h2>'+langBtn()+'</div>'+
-   '<div class="page"><p style="margin:0">'+esc(iTitle(l))+'</p><p class="note">'+(so?'Warbixintaada waxaa si gaar ah loogu eegi doonaa maamulka.':'Only the Banana administrators can review this report. Reports do not automatically remove listings.')+'</p>'+
-   '<form class="page" id="reportForm">'+
-   '<label for="reportReason">'+(so?'Sababta':'Reason')+'<select class="in" id="reportReason" required><option value="scam">'+(so?'Khiyaano':'Suspected scam')+'</option><option value="inappropriate">'+(so?'Wax aan habboonayn':'Inappropriate content')+'</option><option value="prohibited">'+(so?'Alaab mamnuuc ah':'Prohibited item')+'</option><option value="spam">Spam / duplicate</option><option value="other">'+(so?'Wax kale':'Other')+'</option></select></label>'+
-   '<label for="reportDetails">'+(so?'Faahfaahin (ikhtiyaari)':'Details (optional)')+'<textarea class="in" id="reportDetails" maxlength="500" placeholder="'+(so?'Sharax dhibaatada':'Briefly explain the problem')+'"></textarea></label>'+
-   (S.reportError?'<p class="err">'+esc(S.reportError)+'</p>':'')+
-   '<button class="btn" type="submit"'+(S.reportBusy?' disabled':'')+'>'+(S.reportBusy?'Sending…':(so?'Dir warbixinta':'Submit report'))+'</button></form></div>';
-};
-
 function chatBody(i){
   if(S.msgs.length)return S.msgs.map(function(x){return '<div class="bub '+(x.from===UID?'me':'them')+'">'+esc(x.text)+'</div>'}).join('');
   return '<div class="empty" style="padding:16px 0 4px">'+esc(t('chatHello',{n:chatOther().split(' ')[0]}))+'</div><div class="quick">'+
@@ -356,7 +349,7 @@ V.chat=function(){
   var i=byId(S.activeChat&&S.activeChat.listingId);if(!i)return V.msgs();
   return '<div class="bar"><button class="back" data-act="back" aria-label="'+esc(t('back'))+'">&larr;</button><h2>'+esc(chatOther())+'</h2>'+langBtn()+'</div><div class="page" style="gap:10px">'+
   '<button class="mini" data-act="open" data-id="'+esc(i.id)+'"><img alt="" src="'+img(i)+'"><div><b>'+esc(iTitle(i))+'</b><span class="meta">'+money(i.price)+' · '+esc(cityL(i.city))+'</span></div></button>'+
-  (!i.sellerId?'<p class="note" style="margin:0">'+esc(t('sample'))+'</p>':'')+'<div class="msgs" id="msgs">'+chatBody(i)+'</div></div>'+
+  (i.sellerId==='seed'?'<p class="note" style="margin:0">'+esc(t('sample'))+'</p>':'')+'<div class="msgs" id="msgs">'+chatBody(i)+'</div></div>'+
   '<form class="fixed composer" id="chatForm"><div><input class="in" id="chatIn" placeholder="'+esc(t('writeMsg'))+'" autocomplete="off" aria-label="'+esc(t('msgLbl'))+'"><button class="btn small" type="submit">'+esc(t('send'))+'</button></div></form>';
 };
 function myChats(){
@@ -402,7 +395,7 @@ V.me=function(){
 function render(){
   document.documentElement.lang=LANG;
   var app=document.getElementById('app');
-  app.innerHTML=V[S.view]()+(S.view==='welcome'||S.view==='chat'||S.view==='auth'||S.view==='recover'?'':tabs());
+  app.innerHTML=V[S.view]()+(S.view==='welcome'||S.view==='chat'||S.view==='auth'?'':tabs());
   if(S.view==='chat'){var m=document.getElementById('msgs');if(m&&m.lastElementChild)m.lastElementChild.scrollIntoView({block:'end'})}
 }
 /* Called when shared data changes. Keeps typed text safe by only redrawing the data parts. */
@@ -512,6 +505,7 @@ function sendMsg(text){
   text=(text||'').trim();
   var ac=S.activeChat,l=ac&&byId(ac.listingId);
   if(!text||!l||!SB||!USER)return;
+  var mineCount=S.msgs.filter(function(m){return m.from===UID}).length;
   queue(async function(){
     if(!ac.id){
       var c=await SB.from('chats').insert({listing_id:l.id,buyer_id:USER.id,seller_id:l.sellerId||null}).select().single();
@@ -522,6 +516,11 @@ function sendMsg(text){
     if(m.error)throw m.error;
     addMsg(m.data);
     await loadChats();
+  }).then(function(){
+    if(!l.sellerId){
+      var reply=t('r'+((mineCount%4)+1));
+      setTimeout(function(){SB.rpc('sample_reply',{p_chat:ac.id,p_body:reply}).then(function(){return loadMsgs(ac.id)}).then(loadChats)},1100);
+    }
   }).catch(function(){toast(t('msgFail'))});
 }
 
@@ -537,17 +536,6 @@ function toggleFav(id){
   });
 }
 
-/* Password recovery is a special authenticated session, not account creation. */
-V.recover=function(){
-  return '<div class="langrow">'+langBtn()+'</div><div class="hero">'+BANANA.replace('width="34" height="34"','width="72" height="72"')+
-    '<h1>'+(LANG==='so'?'Samee furaha sirta ah ee cusub':'Set a new password')+'</h1><p>'+(LANG==='so'?'Akoonkaaga jira ayaa la haynayaa.':'Your existing Banana account will be kept.')+'</p></div>'+
-    '<form class="page" id="recoverForm" novalidate><label for="newPassword">'+(LANG==='so'?'Furaha sirta ah ee cusub':'New password')+
-    '<input class="in" id="newPassword" type="password" autocomplete="new-password" minlength="8" required></label>'+
-    '<label for="confirmPassword">'+(LANG==='so'?'Ku celi furaha sirta ah':'Confirm new password')+
-    '<input class="in" id="confirmPassword" type="password" autocomplete="new-password" minlength="8" required></label>'+
-    (S.reg?'<p class="err" role="alert">'+esc(S.reg)+'</p>':'')+
-    '<button class="btn" type="submit"'+(S.recoveryBusy?' disabled':'')+'>'+(S.recoveryBusy?'Saving…':(LANG==='so'?'Kaydi furaha cusub':'Save new password'))+'</button></form>';
-};
 /* ---------- Sign in screen ---------- */
 V.auth=function(){
   var e=S.err,up=S.authMode==='up';
@@ -559,8 +547,7 @@ V.auth=function(){
   '<label for="aPass">'+esc(t('password'))+'<input class="in" id="aPass" type="password" autocomplete="'+(up?'new-password':'current-password')+'"><span class="meta" style="margin:0">'+esc(t('passHint'))+'</span><span class="err">'+esc(e.pass||'')+'</span></label>'+
   '<button class="btn" type="submit">'+esc(t(up?'signUp':'signIn'))+'</button>'+
   '<a class="btn ghost altlink" href="#'+(up?'sign-in':'create-account')+'" data-act="authmode" data-v="'+(up?'in':'up')+'">'+esc(t(up?'haveAcc':'noAcc'))+'</a>'+
-  (up?'':'<button class="link" type="button" data-act="forgot">'+(LANG==='so'?'Ma illowday furaha sirta ah?':'Forgot password?')+'</button>')+
-   '<button class="link" type="button" data-act="guest">'+esc(t('guest'))+'</button></form>';
+  '<button class="link" type="button" data-act="guest">'+esc(t('guest'))+'</button></form>';
 };
 
 /* ---------- Sign in / create account switch ---------- */
@@ -576,13 +563,58 @@ function setAuthMode(mode){
 }
 /* Backup route: if a tap ever fails to reach the click handler, the link still changes the web address and this takes over. */
 function routeHash(){
-  if(USER||S.recovering)return;
+  if(USER)return;
   if(location.hash==='#create-account')setAuthMode('up');
   else if(location.hash==='#sign-in')setAuthMode('in');
 }
 window.addEventListener('hashchange',routeHash);
 window.addEventListener('error',function(e){var m=String(e.message||'');if(!m||/^script error/i.test(m))return;try{toast('Error: '+m.slice(0,140))}catch(x){}});
 window.addEventListener('unhandledrejection',function(e){var r=e.reason,m=String((r&&r.message)||r||'');if(!m)return;try{toast('Error: '+m.slice(0,140))}catch(x){}});
+
+/* ---------- Remove a listing: always ask first ---------- */
+var confirmOpener=null;
+function openConfirm(id,opener){
+  closeConfirm();
+  confirmOpener=opener||null;
+  var d=document.createElement('div');
+  d.className='modal-back';d.id='confirmBox';
+  d.innerHTML='<div class="modal" role="alertdialog" aria-modal="true" aria-describedby="confirmText"><p id="confirmText">'+esc(t('delConfirm'))+'</p><div class="modal-btns"><button type="button" class="btn ghost" id="delCancel" data-act="delcancel">'+esc(t('cancel'))+'</button><button type="button" class="btn danger" id="delYes" data-act="delyes" data-id="'+esc(id)+'">'+esc(t('delYes'))+'</button></div></div>';
+  document.body.appendChild(d);
+  document.getElementById('delCancel').focus();
+}
+function closeConfirm(){
+  var d=document.getElementById('confirmBox');if(d)d.remove();
+  if(confirmOpener&&document.body.contains(confirmOpener)){try{confirmOpener.focus()}catch(e){}}
+  confirmOpener=null;
+}
+function confirmDelete(id){
+  var yes=document.getElementById('delYes'),no=document.getElementById('delCancel');
+  if(yes&&yes.disabled)return;
+  var l=byId(id);
+  if(!l||!isMine(l)){closeConfirm();return}
+  if(yes)yes.disabled=true;if(no)no.disabled=true;
+  var paths=(S.paths&&S.paths[id])||[];
+  SB.from('listings').delete().eq('id',id).then(function(r){
+    if(r&&r.error)throw r.error;
+    S.listings=S.listings.filter(function(x){return x.id!==id});
+    confirmOpener=null;closeConfirm();toast(t('removed'));go('home');
+    if(paths.length)SB.storage.from('photos').remove(paths).then(function(){},function(){});
+  }).then(null,function(){
+    if(yes)yes.disabled=false;if(no)no.disabled=false;
+    closeConfirm();toast(t('saveFail'));
+  });
+}
+document.addEventListener('keydown',function(ev){
+  if(!document.getElementById('confirmBox'))return;
+  if(ev.key==='Escape'){closeConfirm();return}
+  if(ev.key==='Tab'){
+    var c=document.getElementById('delCancel'),y=document.getElementById('delYes');
+    if(ev.shiftKey&&document.activeElement===c){ev.preventDefault();y.focus()}
+    else if(!ev.shiftKey&&document.activeElement===y){ev.preventDefault();c.focus()}
+  }
+});
+/* Tapping the dark area around the dialog counts as Cancel. */
+document.addEventListener('click',function(ev){if(ev.target&&ev.target.id==='confirmBox')closeConfirm()});
 
 /* ---------- Events ---------- */
 document.addEventListener('click',function(ev){
@@ -592,28 +624,18 @@ document.addEventListener('click',function(ev){
   else if(a==='city'){S.city=v;render()}
   else if(a==='cat'){S.cat=v;render()}
   else if(a==='open'){go('detail',{sel:id})}
-  else if(a==='back'){if(S.view==='chat')go(S.chatFrom==='msgs'?'msgs':'detail');else if(S.view==='report')go('detail');else go('home')}
+  else if(a==='back'){if(S.view==='chat')go(S.chatFrom==='msgs'?'msgs':'detail');else go('home')}
   else if(a==='tab'){
     if(v==='post'&&gate('needPost'))return;
     if(v==='msgs'&&gate('needMsg'))return;
     S.err={};S.reg='';go(v);
   }
-  else if(a==='report'){if(gate('needMsg'))return;S.sel=id;S.reportError='';S.reportBusy=false;go('report')}
   else if(a==='chat'){if(gate('needMsg'))return;S.sel=id;openChat(id,UID,'detail')}
   else if(a==='inbox'){S.sel=id;openChat(id,b.dataset.b,'msgs')}
   else if(a==='quick'){sendMsg(v)}
   else if(a==='guest'){S.guest=true;S.reg='';go('home')}
   else if(a==='reg'){S.reg='';S.err={};S.editing=false;go(USER?'welcome':'auth')}
   else if(a==='authmode'){ev.preventDefault();setAuthMode(v)}
-  else if(a==='forgot'){
-    var el=document.getElementById('aEmail'),email=el&&el.value.trim();
-    if(!/^\S+@\S+\.\S+$/.test(email)){S.err={email:t('errEmail')};render();return}
-    if(!SB){toast('Connection unavailable. Try again.');return}
-    b.disabled=true;SB.auth.resetPasswordForEmail(email,{redirectTo:location.origin+location.pathname}).then(function(r){
-      S.reg=r.error?('Could not send email: '+r.error.message):'If this email is registered, check your inbox for a password reset link.';S.err={};render();
-      var e=document.getElementById('aEmail');if(e)e.value=email;
-    }).catch(function(){S.reg='Could not send recovery email. Try again later.';render()});
-  }
   else if(a==='signout'){SB.auth.signOut().then(function(){S.reg='';go('home')})}
   else if(a==='editp'){S.reg='';S.err={};S.editing=true;go('welcome')}
   else if(a==='cancel'){S.editing=false;go('me')}
@@ -626,16 +648,9 @@ document.addEventListener('click',function(ev){
       l.sold=!l.sold;toast(t(l.sold?'soldMsg':'availMsg'));refreshData();
     });
   }
-  else if(a==='del'){
-    var l2=byId(id);if(!l2||!isMine(l2))return;
-    var paths=(S.paths&&S.paths[id])||[];
-    (paths.length?SB.storage.from('photos').remove(paths):Promise.resolve()).then(function(){
-      return SB.from('listings').delete().eq('id',id);
-    }).then(function(r){
-      if(r&&r.error){toast(t('saveFail'));return}
-      S.listings=S.listings.filter(function(x){return x.id!==id});toast(t('removed'));go('home');
-    });
-  }
+  else if(a==='del'){var l2=byId(id);if(!l2||!isMine(l2))return;openConfirm(id,b)}
+  else if(a==='delcancel'){closeConfirm()}
+  else if(a==='delyes'){confirmDelete(id)}
 });
 document.addEventListener('input',function(ev){
   if(ev.target.id==='q'){S.q=ev.target.value;document.getElementById('grid').innerHTML=gridHtml()}
@@ -660,35 +675,7 @@ document.addEventListener('change',function(ev){
 document.addEventListener('submit',function(ev){
   ev.preventDefault();
   var f=ev.target.id;
-  if(f==='recoverForm'){
-    if(S.recoveryBusy)return;
-    var pw1=document.getElementById('newPassword').value,pw2=document.getElementById('confirmPassword').value;
-    if(pw1.length<8){S.reg='Use at least 8 characters.';render();return}
-    if(pw1!==pw2){S.reg='Passwords do not match.';render();return}
-    if(!SB||!USER){S.reg='This recovery link is invalid or expired. Request a fresh recovery email.';render();return}
-    S.recoveryBusy=true;S.reg='';var save=document.querySelector('#recoverForm button[type=submit]');if(save){save.disabled=true;save.textContent='Saving…'}
-    SB.auth.updateUser({password:pw1}).then(function(r){
-      S.recoveryBusy=false;
-      if(r.error){S.reg='Could not reset password: '+r.error.message;render();return}
-      S.recovering=false;RECOVERY_LINK=false;S.reg='';
-      try{history.replaceState(null,'',location.pathname)}catch(e){}
-      toast('Password updated successfully');go(isReg()?'home':'welcome');
-    }).catch(function(){S.recoveryBusy=false;S.reg='Could not update password. Try again.';render()});
-  }
-  else if(f==='reportForm'){
-    if(S.reportBusy||!USER)return;
-    var l=byId(S.sel);
-    if(!l||!l.sellerId||l.sellerId===USER.id){S.reportError='This listing cannot be reported.';render();return}
-    var reason=document.getElementById('reportReason').value;
-    var details=document.getElementById('reportDetails').value.trim();
-    S.reportBusy=true;S.reportError='';
-    SB.from('reports').insert({reporter_id:USER.id,listing_id:l.id,reported_seller_id:l.sellerId,listing_title:l.title,reason:reason,details:details}).then(function(r){
-      S.reportBusy=false;
-      if(r.error){S.reportError=r.error.code==='23505'?'You have already reported this listing.':'Report not sent. Please try again.';render();return}
-      toast('Report submitted for review');go('detail');
-    }).catch(function(){S.reportBusy=false;S.reportError='Report not sent. Please try again.';render()});
-  }
-  else if(f==='authForm'){
+  if(f==='authForm'){
     var em=document.getElementById('aEmail').value.trim(),pw=document.getElementById('aPass').value;
     S.err={};
     if(!/^\S+@\S+\.\S+$/.test(em))S.err.email=t('errEmail');
@@ -772,7 +759,6 @@ render();routeHash();
     setUser(sess.data&&sess.data.session?sess.data.session.user:null);
     SB.auth.onAuthStateChange(function(ev,session){
       var nu=session?session.user:null;
-      if(ev==='PASSWORD_RECOVERY'){S.recovering=true;S.view='recover';S.reg='';render()}
       if((nu&&nu.id)===(USER&&USER.id))return;
       setUser(nu);
       setTimeout(function(){loadMine().then(function(){refreshData()})},0);
@@ -780,8 +766,7 @@ render();routeHash();
     await Promise.all([loadListings(),loadProfiles()]);
     if(USER)await loadMine();
     S.ready=true;
-    if(S.recovering){S.view='recover';if(!USER)S.reg='Recovery session not found. Request a new reset link.'}
-    else if(USER&&!isReg()&&!S.welcomed){S.welcomed=true;S.view='welcome'}
+    if(USER&&!isReg()&&!S.welcomed){S.welcomed=true;S.view='welcome'}
     render();
     var rl=debounce(function(){loadListings().then(refreshData)},400);
     SB.channel('banana-public')
