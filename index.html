@@ -228,6 +228,7 @@ var BANANA='<svg width="34" height="34" viewBox="0 0 48 48" aria-hidden="true"><
 
 /* ---------- State. Shared data comes from the db capability: listings, users, chats ---------- */
 var SB=null,USER=null,UID=null,ME=null,CANWRITE=null,CFG=window.BANANA_CONFIG||{};
+var SITE_URL='https://aboamjad88.github.io/Banan/';
 var S={view:'home',city:'All',cat:'All',q:'',sel:null,draft:{photos:[]},reg:'',err:{},saved:false,
   ready:false,listings:[],users:{},usersLoaded:false,priv:{favs:[],phone:''},chatsB:{},chatsS:{},
   guest:false,noCfg:false,authMode:'in',paths:{},msgChan:null,welcomed:false,editing:false,photosOf:{},msgs:[],activeChat:null,chatFrom:'detail',posting:false,unMsgs:null};
@@ -682,7 +683,7 @@ document.addEventListener('submit',function(ev){
     if(pw.length<6)S.err.pass=t('errPass');
     if(S.err.email||S.err.pass){render();document.getElementById('aEmail').value=em;return}
     var up=S.authMode==='up';
-    (up?SB.auth.signUp({email:em,password:pw}):SB.auth.signInWithPassword({email:em,password:pw})).then(function(r){
+    (up?SB.auth.signUp({email:em,password:pw,options:{emailRedirectTo:SITE_URL}}):SB.auth.signInWithPassword({email:em,password:pw})).then(function(r){
       if(r.error){S.err={pass:t('authFail')};render();document.getElementById('aEmail').value=em;return}
       if(!r.data.session){S.reg=t('checkMail');S.authMode='in';render();return}
       setUser(r.data.session.user);
