@@ -163,7 +163,7 @@ var TXT={
   savedItems:'Saved items ({n})',noSaved:'Tap the heart on an item to save it.',soldBanner:'This item has been sold.',heartAdd:'Save item',heartDel:'Remove from saved',
   loading:'Loading listings…',noDb:'Shared listings are not available here. Open this page from its Claude link and sign in.',
   readOnly:'You can look around, but not post or message. Ask the owner for edit access.',saveFail:'Could not save. Check your internet and try again.',
-  email:'Email',password:'Password',passHint:'At least 6 characters',signIn:'Sign in',signUp:'Create account',haveAcc:'Already have an account? Sign in',noAcc:'New here? Create an account',signOut:'Sign out',authH1:'Sign in to Banana',errEmail:'Enter a valid email.',errPass:'Use at least 6 characters.',checkMail:'Check your email to confirm your account, then sign in.',authFail:'Could not sign in. Check your email and password.',needFav:'Sign in to save items.',delConfirm:'Are you sure you want to remove this listing? This action cannot be undone.',delYes:'Yes, remove',setupH:'Almost ready',setupP:'Open config.js and add your Supabase URL and key. The README explains how.',
+  email:'Email',password:'Password',passHint:'At least 6 characters',signIn:'Sign in',signUp:'Create account',haveAcc:'Already have an account? Sign in',noAcc:'New here? Create an account',signOut:'Sign out',authH1:'Sign in to Banana',errEmail:'Enter a valid email.',errPass:'Use at least 6 characters.',checkMail:'Check your email to confirm your account, then sign in.',authFail:'Could not sign in. Check your email and password.',needFav:'Sign in to save items.',delConfirm:'Are you sure you want to remove this listing? This action cannot be undone.',delYes:'Yes, remove',reportBtn:'Report listing',reportH:'Why are you reporting this listing?',reportNote:'Add details (optional)',reportSend:'Send report',reportPick:'Choose a reason.',reportThanks:'Thank you. Your report was sent and will be reviewed.',needReport:'Sign in to report a listing.',reportDup:'You already reported this listing.',rScam:'Scam or fraud',rInap:'Inappropriate or offensive',rProh:'Prohibited item',rSpam:'Spam or duplicate',rOther:'Something else',setupH:'Almost ready',setupP:'Open config.js and add your Supabase URL and key. The README explains how.',
   c:{Electronics:'Electronics',Furniture:'Furniture',Clothes:'Clothes',Vehicles:'Vehicles',Home:'Home'},
   city_:{Mogadishu:'Mogadishu',Hargeisa:'Hargeisa',Kismayo:'Kismayo',Baidoa:'Baidoa',Garowe:'Garowe',Bosaso:'Bosaso',Beledweyne:'Beledweyne',Galkayo:'Galkayo'}
  },
@@ -198,7 +198,7 @@ var TXT={
   savedItems:'Alaabta la keydiyay ({n})',noSaved:'Taabo wadnaha alaab si aad u keydiso.',soldBanner:'Alaabtan waa la iibiyay.',heartAdd:'Keydi alaabta',heartDel:'Ka saar keydka',
   loading:'Alaabta waa la soo rarayaa…',noDb:'Alaabta la wadaago halkan lama heli karo. Fur bogga xiriirkiisa Claude oo gal.',
   readOnly:'Waad eegi kartaa, laakiin ma soo dhigi kartid ama fariin ma diri kartid. Weydii mulkiilaha ogolaansho wax-ka-bedelid.',saveFail:'Lama keydin karin. Hubi internetkaaga oo mar kale isku day.',
-  email:'Iimaylka',password:'Furaha sirta ah',passHint:'Ugu yaraan 6 xaraf',signIn:'Gal',signUp:'Samee akoon',haveAcc:'Akoon ma leedahay? Gal',noAcc:'Cusub? Samee akoon',signOut:'Ka bax',authH1:'Gal Banana',errEmail:'Geli iimayl sax ah.',errPass:'Isticmaal ugu yaraan 6 xaraf.',checkMail:'Iimaylkaaga hubi si aad u xaqiijiso akoonkaaga, ka dibna gal.',authFail:'Lama geli karin. Hubi iimaylkaaga iyo furahaaga.',needFav:'Gal si aad alaab u keydiso.',delConfirm:'Ma hubtaa inaad ka saarto alaabtan? Tallaabadan dib looma celin karo.',delYes:'Haa, ka saar',setupH:'Wuu dhawyahay',setupP:'Fur config.js oo ku dar URL-ka iyo furaha Supabase. README ayaa sharaxaya sida.',
+  email:'Iimaylka',password:'Furaha sirta ah',passHint:'Ugu yaraan 6 xaraf',signIn:'Gal',signUp:'Samee akoon',haveAcc:'Akoon ma leedahay? Gal',noAcc:'Cusub? Samee akoon',signOut:'Ka bax',authH1:'Gal Banana',errEmail:'Geli iimayl sax ah.',errPass:'Isticmaal ugu yaraan 6 xaraf.',checkMail:'Iimaylkaaga hubi si aad u xaqiijiso akoonkaaga, ka dibna gal.',authFail:'Lama geli karin. Hubi iimaylkaaga iyo furahaaga.',needFav:'Gal si aad alaab u keydiso.',delConfirm:'Ma hubtaa inaad ka saarto alaabtan? Tallaabadan dib looma celin karo.',delYes:'Haa, ka saar',reportBtn:'Soo sheeg alaabtan',reportH:'Maxaad u soo sheegaysaa alaabtan?',reportNote:'Ku dar faahfaahin (ikhtiyaari)',reportSend:'Dir warbixinta',reportPick:'Dooro sabab.',reportThanks:'Mahadsanid. Warbixintaada waa la diray, waana la eegi doonaa.',needReport:'Gal si aad alaab u soo sheegto.',reportDup:'Hore ayaad u soo sheegtay alaabtan.',rScam:'Khiyaano ama been',rInap:'Aan habboonayn ama xun',rProh:'Alaab mamnuuc ah',rSpam:'Spam ama nuqul',rOther:'Wax kale',setupH:'Wuu dhawyahay',setupP:'Fur config.js oo ku dar URL-ka iyo furaha Supabase. README ayaa sharaxaya sida.',
   c:{Electronics:'Elektaroonig',Furniture:'Agabka guriga',Clothes:'Dhar',Vehicles:'Gawaarida',Home:'Alaabta jikada'},
   city_:{Mogadishu:'Muqdisho',Hargeisa:'Hargeysa',Kismayo:'Kismaayo',Baidoa:'Baydhabo',Garowe:'Garoowe',Bosaso:'Boosaaso',Beledweyne:'Beledweyne',Galkayo:'Galkacyo'}
  }
@@ -244,7 +244,8 @@ function uName(id){var u=S.users[id];return u&&u.name?u.name:''}
 function sName(l){return l.sellerName||uName(l.sellerId)||t('sellerFallback')}
 function isReg(){return !!(UID&&S.users[UID])}
 function isMine(l){return !!UID&&l.sellerId===UID}
-function toast(m){var b=document.getElementById('toastBox');b.innerHTML='<div class="toast">'+esc(m)+'</div>';setTimeout(function(){b.innerHTML=''},2600)}
+var toastT=null;
+function toast(m){var b=document.getElementById('toastBox');b.innerHTML='<div class="toast">'+esc(m)+'</div>';clearTimeout(toastT);toastT=setTimeout(function(){b.innerHTML=''},2600)}
 function go(v,extra){
   if(v!=='auth'&&(location.hash==='#sign-in'||location.hash==='#create-account')){try{history.replaceState(null,'',location.pathname+location.search)}catch(e){}}
   S.view=v;if(extra)for(var k in extra)S[k]=extra[k];
@@ -334,7 +335,7 @@ V.detail=function(){
   '<p style="margin:0;overflow-wrap:anywhere">'+esc(iDesc(i)||t('noDesc'))+'</p>'+
   '<div class="seller"><div class="av">'+ini(sName(i))+'</div><div><b>'+esc(sName(i))+'</b><div class="meta">'+esc(t('sellerIn',{c:cityL(i.city)}))+'</div></div></div>'+
   (i.sellerId==='seed'?'<p class="note" style="margin:0">'+esc(t('sample'))+'</p>':'')+
-  (mine?'<button class="btn" data-act="sold" data-id="'+esc(i.id)+'">'+esc(t(i.sold?'markAvail':'markSold'))+'</button><button class="btn ghost" data-act="del" data-id="'+esc(i.id)+'">'+esc(t('removeListing'))+'</button>':(i.sold?'':'<button class="btn" data-act="chat" data-id="'+esc(i.id)+'">'+esc(t('messageSeller'))+'</button>'))+'</div>';
+  (mine?'<button class="btn" data-act="sold" data-id="'+esc(i.id)+'">'+esc(t(i.sold?'markAvail':'markSold'))+'</button><button class="btn ghost" data-act="del" data-id="'+esc(i.id)+'">'+esc(t('removeListing'))+'</button>':(i.sold?'':'<button class="btn" data-act="chat" data-id="'+esc(i.id)+'">'+esc(t('messageSeller'))+'</button>'))+(!mine&&i.sellerId&&i.sellerId!=='seed'?'<button class="btn ghost" data-act="report" data-id="'+esc(i.id)+'">'+esc(t('reportBtn'))+'</button>':'')+'</div>';
 };
 function chatBody(i){
   if(S.msgs.length)return S.msgs.map(function(x){return '<div class="bub '+(x.from===UID?'me':'them')+'">'+esc(x.text)+'</div>'}).join('');
@@ -617,6 +618,53 @@ document.addEventListener('keydown',function(ev){
 /* Tapping the dark area around the dialog counts as Cancel. */
 document.addEventListener('click',function(ev){if(ev.target&&ev.target.id==='confirmBox')closeConfirm()});
 
+/* ---------- Report a listing (insert only; reports are never read back) ---------- */
+var REASONS=[['scam','rScam'],['inappropriate','rInap'],['prohibited','rProh'],['spam','rSpam'],['other','rOther']];
+function reportedList(){try{return JSON.parse(localStorage.getItem('bnReported:'+UID)||'[]')}catch(e){return[]}}
+function markReported(id){try{var a=reportedList();if(a.indexOf(id)<0)a.push(id);localStorage.setItem('bnReported:'+UID,JSON.stringify(a))}catch(e){}}
+var reportOpener=null;
+function openReport(id,opener){
+  closeReport();
+  reportOpener=opener||null;
+  var d=document.createElement('div');
+  d.className='modal-back';d.id='reportBox';
+  d.innerHTML='<form class="modal" id="reportForm" role="dialog" aria-modal="true" aria-labelledby="reportTitle" data-id="'+esc(id)+'"><p id="reportTitle">'+esc(t('reportH'))+'</p>'+
+    REASONS.map(function(r,n){return '<label style="display:flex;flex-direction:row;align-items:center;justify-content:flex-start;text-align:left;gap:12px;font-size:16px;font-weight:600;margin:0;padding:6px 0"><input type="radio" name="rreason" value="'+r[0]+'" style="width:22px;height:22px;flex:none"'+(n===0?' id="rFirst"':'')+'>'+esc(t(r[1]))+'</label>'}).join('')+
+    '<textarea id="rDetails" maxlength="500" rows="3" placeholder="'+esc(t('reportNote'))+'" aria-label="'+esc(t('reportNote'))+'" style="width:100%;font-size:16px;padding:10px;border:1.5px solid var(--line);border-radius:12px;font-family:inherit;background:var(--bg);color:var(--ink)"></textarea>'+
+    '<div class="modal-btns"><button type="button" class="btn ghost" id="rCancel" data-act="reportcancel">'+esc(t('cancel'))+'</button><button type="submit" class="btn danger" id="rSend">'+esc(t('reportSend'))+'</button></div></form>';
+  document.body.appendChild(d);
+  var f=document.getElementById('rFirst');if(f)f.focus();
+}
+function closeReport(){
+  var d=document.getElementById('reportBox');if(d)d.remove();
+  if(reportOpener&&document.body.contains(reportOpener)){try{reportOpener.focus()}catch(e){}}
+  reportOpener=null;
+}
+function submitReport(form){
+  var send=document.getElementById('rSend'),no=document.getElementById('rCancel');
+  if(send&&send.disabled)return;
+  var l=byId(form.dataset.id);
+  if(!l||!UID||isMine(l)||!l.sellerId||l.sellerId==='seed'){closeReport();return}
+  var chosen=form.querySelector('input[name=rreason]:checked');
+  if(!chosen){toast(t('reportPick'));return}
+  if(reportedList().indexOf(l.id)>=0){closeReport();toast(t('reportDup'));return}
+  var det=(document.getElementById('rDetails').value||'').trim().slice(0,500);
+  send.disabled=true;no.disabled=true;
+  /* Only these 5 fields are sent. No .select(): ordinary users may insert but not read reports. */
+  SB.from('reports').insert({reporter_id:UID,listing_id:l.id,reported_seller_id:l.sellerId,listing_title:l.title,reason:chosen.value,details:det}).then(function(r){
+    if(r&&r.error){
+      if(r.error.code==='23505'){markReported(l.id);closeReport();toast(t('reportDup'));return}
+      throw r.error;
+    }
+    markReported(l.id);closeReport();toast(t('reportThanks'));
+  }).then(null,function(){
+    send.disabled=false;no.disabled=false;toast(t('saveFail'));
+  });
+}
+document.addEventListener('submit',function(ev){if(ev.target&&ev.target.id==='reportForm'){ev.preventDefault();submitReport(ev.target)}});
+document.addEventListener('keydown',function(ev){if(ev.key==='Escape'&&document.getElementById('reportBox'))closeReport()});
+document.addEventListener('click',function(ev){if(ev.target&&ev.target.id==='reportBox')closeReport()});
+
 /* ---------- Events ---------- */
 document.addEventListener('click',function(ev){
   var b=ev.target.closest('[data-act]');if(!b)return;
@@ -650,6 +698,8 @@ document.addEventListener('click',function(ev){
     });
   }
   else if(a==='del'){var l2=byId(id);if(!l2||!isMine(l2))return;openConfirm(id,b)}
+  else if(a==='report'){var l3=byId(id);if(!l3||isMine(l3)||!l3.sellerId||l3.sellerId==='seed')return;if(gate('needReport'))return;openReport(id,b)}
+  else if(a==='reportcancel'){closeReport()}
   else if(a==='delcancel'){closeConfirm()}
   else if(a==='delyes'){confirmDelete(id)}
 });
